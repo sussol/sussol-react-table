@@ -1,0 +1,9 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "rules": {
+    "jsx-boolean-value": "off",
+    "object-shorthand": "off",
+  },
+  "new-cap": ["error", {"capIsNewExceptions": ["Dimensions", "UserIsAuthenticated", "UserAuthWrapper"]}]
+}
