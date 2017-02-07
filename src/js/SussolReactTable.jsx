@@ -22,14 +22,14 @@ export class SussolReactTable extends React.Component {
     this.renderColumns = this.renderColumns.bind(this);
   }
 
-  toggleSortOrder() {
+  toggleSortOrder(columnKey) {
     this.setState({
+      sortBy: columnKey,
       isAscending: !this.state.isAscending,
     });
   }
 
   editCell(rowIndex, columnKey, newValue) {
-    // TODO: look at blueprint EditableCell
     const tableData = this.state.tableData;
     tableData[rowIndex][columnKey] = newValue;
     this.setState({
@@ -40,7 +40,8 @@ export class SussolReactTable extends React.Component {
 // Renders column headers. Gets the sort direction from state and the label columns array.
   renderColumnHeader(column) {
     let sortIcon;
-    if (this.state.sortBy === column.key && column.isEditable) {
+
+    if ( column.sortable &&this.state.sortBy === column.key ) {
       sortIcon = (
         <FontIcon className="material-icons">
           {this.state.isAscending ? 'arrow_drop_up' : 'arrow_drop_down'}
@@ -50,10 +51,10 @@ export class SussolReactTable extends React.Component {
     return (
       <ColumnHeaderCell >
         <FlatButton
-          label="Dollars"
+          label={column.title}
           labelPosition="before"
           icon={sortIcon}
-          onClick={() => this.toggleSortOrder()}
+          onClick={() => this.toggleSortOrder(column.key)}
           style={{ width: '100%' }}
         />
       </ColumnHeaderCell>
@@ -62,22 +63,19 @@ export class SussolReactTable extends React.Component {
 
   renderCell(rowIndex, columnKey) {
     const tableData = this.state.tableData;
+    const value = tableData[rowIndex][columnKey] != null ? tableData[rowIndex][columnKey] : '';
     return (
-      <Cell>
-        {tableData[rowIndex][columnKey]}
-      </Cell>
+      <Cell>{value}</Cell>
     );
   }
 
   renderEditableCell(rowIndex, columnKey) {
     const tableData = this.state.tableData;
+    const value = tableData[rowIndex][columnKey] != null ? tableData[rowIndex][columnKey] : '';
     return (
       <EditableCell
-        truncated={false}
-        onConfirm={(newValue) => { this.editCell(newValue); }}
-        value={
-          tableData[rowIndex][columnKey]
-        }
+        onConfirm={(newValue) => { this.editCell(rowIndex, columnKey, newValue); }}
+        value={value}
       />
     );
   }
@@ -85,12 +83,12 @@ export class SussolReactTable extends React.Component {
   renderColumns() {
     const columnDefinitions = this.state.columns;
     const columns = columnDefinitions.map((columnDef, index) => {
-      if (columnDef.isEditable) {
+      if (columnDef.editable) {
         return (
           <Column
             key={index}
             renderCell={(rowIndex) => this.renderEditableCell(rowIndex, columnDef.key)}
-            renderColumnHeader={this.renderColumnHeader}
+            renderColumnHeader={() => this.renderColumnHeader(columnDef)}
           />
         );
       }

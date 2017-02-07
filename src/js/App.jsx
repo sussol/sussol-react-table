@@ -18,19 +18,19 @@ const columns = [
     key: 'group',
     width: 2,
     title: 'Edit Test',
-    isEditable: true,
+    editable: true,
   },
 ];
 
 const data = [];
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 100; i++) {
   data.push({ code: `code${i}`, name: `name${i}`, group: `group${i % 2}` });
 }
 
 export class App extends React.Component {
   render() {
     return (
-      <div height={500}>
+      <div style={{height: 400}}>
         <h1>A Beautiful table</h1>
         <SussolReactTable
           columns={columns}
