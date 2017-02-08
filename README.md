@@ -49,7 +49,7 @@ export class App extends React.Component {
   }
 }
 ```
-You will need grab the styles via your index.html file. Make sure the path to styles is correct.
+You will need grab the styles and material icons via your index.html file. Make sure the path to styles is correct.
 ```
 <!DOCTYPE html>
 <html>
