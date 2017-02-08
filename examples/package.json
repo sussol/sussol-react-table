@@ -1,27 +1,16 @@
 {
-  "author": {
-    "name": "Sustainable Solutions (NZ) Ltd.",
-    "email": "info@sussol.net"
-  },
-  "name": "sussol-react-table",
-  "main": "lib/index.js",
+  "name": "SussolReactTable-example",
   "version": "0.1.0",
-  "license": "MIT",
-  "description": "A Sussol themed wrapper and simple API for the blueprintjs table component",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/sussol/sussol-react-table.git"
-  },
-  "url": "http://github.com/sussol/sussol-react-table",
-  "homepage": "http://sussol.net",
+  "private": false,
+  "description": "SussolReactTable example",
+  "main": "index.js",
   "scripts": {
-    "build": "babel --presets stage-0,es2015 src --out-dir lib",
-    "prepublish": "npm run build",
-    "test": "jest"
-  },
-  "jest": {
-    "verbose": true,
-    "testEnvironment": "node"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "webpack-server": "webpack-dev-server --hot --progress --colors",
+    "web-server": "http-server -p 3000 .",
+    "start": "npm run webpack-server & npm run web-server",
+    "build-development": "webpack --optimize-minimize",
+    "build": "webpack --optimize-minimize --define NODE_ENV='\"production\"'"
   },
   "dependencies": {
     "@blueprintjs/core": "^1.7.0",
@@ -52,11 +41,12 @@
     "eslint-plugin-react": "^4.3.0",
     "file-loader": "^0.9.0",
     "http-server": "^0.8.0",
-    "jest": "^18.1.0",
     "react-hot-loader": "^1.3.0",
     "source-map-loader": "^0.1.5",
     "webpack": "^1.12.14",
     "webpack-dev-server": "^1.14.1",
     "whatwg-fetch": "^0.11.0"
   },
+  "author": "Sustainable Solutions (NZ)",
+  "license": "MIT"
 }
