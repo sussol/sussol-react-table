@@ -53,7 +53,6 @@ You will need grab the styles and material icons via your index.html file. Make 
   <head>
     <meta charset="UTF-8" />
     <title>Your Title</title>
-    <link rel="stylesheet" href="./src/css/custom.css"></link>
     <link href="relative path to/node_modules/normalize.css/normalize.css" rel="stylesheet" />
     <link href="relative path to/node_modules/@blueprintjs/core/dist/blueprint.css" rel="stylesheet" />
     <link href="relative path to/node_modules/@blueprintjs/table/dist/table.css" rel="stylesheet" />
