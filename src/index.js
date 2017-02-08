@@ -1,0 +1,1 @@
+export { SussolReactTable } from './SussolReactTable';

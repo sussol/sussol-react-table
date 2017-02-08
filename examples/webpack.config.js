@@ -2,7 +2,7 @@ var webpack = require('webpack');
 var PROD = process.env.NODE_ENV === 'production';
 
 module.exports = {
-  entry: getEntrySources(['babel-polyfill', './src/js/index.js']),
+  entry: getEntrySources(['babel-polyfill', './src/index.js']),
   output: {
       publicPath: PROD ? './build/' : 'http://localhost:8080/build/',
       path: __dirname + '/build',
