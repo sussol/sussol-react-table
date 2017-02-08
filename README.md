@@ -12,19 +12,16 @@ import { SussolReactTable } from 'sussol-react-table';
 const columns = [
   {
     key: 'name',
-    width: 10,
     title: 'Name',
     sortable: true,
   },
   {
     key: 'code',
-    width: 2,
     title: 'Code',
     sortable: true,
   },
   {
     key: 'group',
-    width: 2,
     title: 'Editable Column',
     editable: true,
   },
@@ -68,3 +65,5 @@ You will need grab the styles and material icons via your index.html file. Make 
   </body>
 </html>
 
+# Additional docs
+Read up on the API for the [blueprintjs table component(http://blueprintjs.com/docs/#components.table-js.api).
