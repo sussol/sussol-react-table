@@ -64,6 +64,6 @@ You will need grab the styles and material icons via your index.html file. Make 
     <script src="http://localhost:8080/build/bundle.js" charset="utf-8"></script>
   </body>
 </html>
-
+```
 # Additional docs
 Read up on the API for the [blueprintjs table component(http://blueprintjs.com/docs/#components.table-js.api).
