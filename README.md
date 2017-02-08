@@ -66,4 +66,4 @@ You will need grab the styles and material icons via your index.html file. Make 
 </html>
 ```
 # Additional docs
-Read up on the API for the [blueprintjs table component(http://blueprintjs.com/docs/#components.table-js.api).
+Read up on the API for the [blueprintjs table component](http://blueprintjs.com/docs/#components.table-js.api).
