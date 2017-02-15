@@ -22,6 +22,10 @@ export class SussolReactTable extends React.Component {
     this.renderColumns = this.renderColumns.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ tableData: nextProps.tableData });
+  }
+
   toggleSortOrder(columnKey) {
     this.setState({
       sortBy: columnKey,
