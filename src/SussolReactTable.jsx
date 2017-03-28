@@ -109,7 +109,7 @@ export class SussolReactTable extends React.Component {
 
   render() {
     return (
-      <Table numRows={this.state.tableData.length}>
+      <Table {...this.props} numRows={this.state.tableData.length}>
         {this.renderColumns()}
       </Table>
     );
