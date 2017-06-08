@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Cell, ColumnHeaderCell, EditableCell, Column, Table } from '@blueprintjs/table';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
@@ -117,11 +118,11 @@ export class SussolReactTable extends React.Component {
 }
 
 SussolReactTable.propTypes = {
-  columns: React.PropTypes.array,
-  tableData: React.PropTypes.array,
-  defaultSortKey: React.PropTypes.string,
-  hideSearchBar: React.PropTypes.bool,
-  rowHeight: React.PropTypes.number,
+  columns: PropTypes.array,
+  tableData: PropTypes.array,
+  defaultSortKey: PropTypes.string,
+  hideSearchBar: PropTypes.bool,
+  rowHeight: PropTypes.number,
 };
 
 SussolReactTable.defaultProps = {
