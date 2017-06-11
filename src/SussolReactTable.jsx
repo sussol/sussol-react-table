@@ -118,6 +118,7 @@ export class SussolReactTable extends React.Component {
 }
 
 SussolReactTable.propTypes = {
+  ...Table.propTypes,
   columns: PropTypes.array,
   tableData: PropTypes.array,
   defaultSortKey: PropTypes.string,
