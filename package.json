@@ -24,20 +24,19 @@
     "testEnvironment": "node"
   },
   "dependencies": {
-    "@blueprintjs/core": "^1.7.0",
-    "@blueprintjs/table": "^1.4.1",
-    "babel-plugin-syntax-async-functions": "^6.13.0",
-    "babel-plugin-transform-regenerator": "^6.14.0",
+    "@blueprintjs/core": "^1.25.1",
+    "@blueprintjs/table": "1.21.0",
     "babel-polyfill": "^6.13.0",
     "exports-loader": "^0.6.3",
     "imports-loader": "^0.6.5",
     "material-ui": "^0.16.7",
     "prop-types": "^15.5.10",
-    "react": "^15.4.2",
+    "react": "^15.6.1",
     "react-addons-css-transition-group": "^15.4.2",
-    "react-dom": "^15.4.2",
+    "react-dom": "^15.6.1",
     "react-loader": "^2.2.0",
-    "react-tap-event-plugin": "^2.0.1"
+    "react-tap-event-plugin": "^2.0.1",
+    "webpack-dev-server": "1.14.1"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",
@@ -53,12 +52,9 @@
     "eslint-plugin-jsx-a11y": "^0.6.2",
     "eslint-plugin-react": "^4.3.0",
     "file-loader": "^0.9.0",
-    "http-server": "^0.8.0",
     "jest": "^18.1.0",
     "react-hot-loader": "^1.3.0",
     "source-map-loader": "^0.1.5",
-    "webpack": "^1.12.14",
-    "webpack-dev-server": "^1.14.1",
-    "whatwg-fetch": "^0.11.0"
+    "webpack": "^1.12.14"
   }
 }
