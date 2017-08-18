@@ -13,11 +13,11 @@ import FlatButton from 'material-ui/FlatButton';
 * @param {bool}    isAscending: true/false
 * @return {int}    e.g. -1, 0, 1
 */
-const compare = (a, b, isAscending) => {
-  return isAscending
-    ? a.toString().localeCompare(b)
-    : b.toString().localeCompare(a);
-}
+const compare = (a, b, isAscending) => (
+  isAscending
+  ? a.toString().localeCompare(b)
+  : b.toString().localeCompare(a)
+);
 
 const noop = () => {};
 
@@ -63,13 +63,13 @@ export class SussolReactTable extends React.Component {
   */
   sortColumn(columnKey, comparator) {
     const { tableData } = this.state;
-    return tableData.sort((a, b) => {
-      return comparator(
+    return tableData.sort((a, b) => (
+      comparator(
         a[columnKey],
         b[columnKey],
         this.state.isAscending,
-      );
-    });
+      )
+    ));
   }
 
   editCell(rowIndex, columnKey, newValue) {
