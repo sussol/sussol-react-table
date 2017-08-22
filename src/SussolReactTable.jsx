@@ -7,6 +7,7 @@ import FlatButton from 'material-ui/FlatButton';
 * compare
 *
 * Provides a basic implementation of either a sort ASC or sort DESC comparator.
+* Sort example: 10 will come after 2, not "1, 10, 2"
 *
 * @param {any}     data which can be converted to a string
 * @param {any}     data which can be converted to a string
@@ -15,8 +16,8 @@ import FlatButton from 'material-ui/FlatButton';
 */
 const compare = (a, b, isAscending) => (
   isAscending
-  ? a.toString().localeCompare(b)
-  : b.toString().localeCompare(a)
+  ? a.toString().localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
+  : b.toString().localeCompare(a, undefined, { numeric: true, sensitivity: 'base' })
 );
 
 const noop = () => {};
