@@ -24,20 +24,22 @@
     "testEnvironment": "node"
   },
   "dependencies": {
-    "@blueprintjs/core": "^1.7.0",
-    "@blueprintjs/table": "^1.4.1",
+    "@blueprintjs/core": "^1.30.0",
+    "@blueprintjs/table": "^1.27.0",
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-regenerator": "^6.14.0",
     "babel-polyfill": "^6.13.0",
     "exports-loader": "^0.6.3",
     "imports-loader": "^0.6.5",
-    "material-ui": "^0.16.7",
+    "material-ui": "^0.19.3",
     "prop-types": "^15.5.10",
-    "react": "^15.4.2",
-    "react-addons-css-transition-group": "^15.4.2",
-    "react-dom": "^15.4.2",
+    "react-addons-css-transition-group": "^15.6.2",
     "react-loader": "^2.2.0",
     "react-tap-event-plugin": "^2.0.1"
+  },
+  "peerDependencies": {
+    "react": "^15.4.0 || ^16.0.0",
+    "react-dom": "^15.4.0 || ^16.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",
