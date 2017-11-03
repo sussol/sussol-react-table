@@ -4,6 +4,12 @@ A wrapper and simple API for using the blueprintjs data table
 # Installation
 `npm install --save sussol-react-table`
 
+# Added Options
+
+| Prop          | Type          | Description  |
+| ------------- |:-------------:| ------------ |
+| `cellDataKey` | `str`         | Pass a key (object property) from your table data set as a string. The data's key will be used to access a value &ndash; the unique key. Good for selecting the table row and loading a corresponding component, based on the selected key. e.g. `{ ... code: 123456789, ...}` |
+
 # Example
 ```
 import React from 'react';
@@ -40,6 +46,7 @@ export class App extends React.Component {
         <SussolReactTable
           columns={columns}
           tableData={data}
+          cellDataKey="code"
         />
       </div>
     );

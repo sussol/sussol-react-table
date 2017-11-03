@@ -28,7 +28,6 @@ export class SussolReactTable extends React.Component {
     this.state = {
       columns: props.columns || [],
       tableData: props.tableData,
-      searchTerm: '',
       sortBy: props.defaultSortKey || '',
       isAscending: true,
     };
@@ -108,46 +107,43 @@ export class SussolReactTable extends React.Component {
     );
   }
 
-  renderCell(rowIndex, columnKey) {
+  renderCell(rowIndex, columnKey, { cellDataKey }) {
     const tableData = this.state.tableData;
-    const value = tableData[rowIndex][columnKey] != null ? tableData[rowIndex][columnKey] : '';
+    const value = tableData[rowIndex][columnKey] !== null ? tableData[rowIndex][columnKey] : '';
     return (
-      <Cell>{value}</Cell>
+      <Cell
+        className={`${cellDataKey}-${tableData[rowIndex][cellDataKey]}`}
+      >
+        {value}
+      </Cell>
     );
   }
 
-  renderEditableCell(rowIndex, columnKey) {
+  renderEditableCell(rowIndex, columnKey, { cellDataKey }) {
     const tableData = this.state.tableData;
-    const value = tableData[rowIndex][columnKey] != null ? tableData[rowIndex][columnKey] : '';
+    const value = tableData[rowIndex][columnKey] !== null ? tableData[rowIndex][columnKey] : '';
     return (
       <EditableCell
+        className={`${cellDataKey}-${tableData[rowIndex][cellDataKey]}`}
         onConfirm={(newValue) => { this.editCell(rowIndex, columnKey, newValue); }}
         value={value}
       />
     );
   }
 
-  renderColumns() {
+  renderColumns(props) {
     const columnDefinitions = this.state.columns;
-    const columns = columnDefinitions.map((columnDef, index) => {
-      if (columnDef.editable) {
-        return (
-          <Column
-            key={index}
-            renderCell={(rowIndex) => this.renderEditableCell(rowIndex, columnDef.key)}
-            renderColumnHeader={() => this.renderColumnHeader(columnDef)}
-          />
-        );
-      }
-      return (
-        <Column
-          key={index}
-          renderCell={(rowIndex) => this.renderCell(rowIndex, columnDef.key)}
-          renderColumnHeader={() => this.renderColumnHeader(columnDef)}
-        />
-      );
-    });
-    return columns;
+
+    return columnDefinitions.map((columnDef, index) => (
+      <Column
+        key={index}
+        renderCell={(rowIndex) => columnDef.editable
+          ? this.renderEditableCell(rowIndex, columnDef.key, props)
+          : this.renderCell(rowIndex, columnDef.key, props)
+        }
+        renderColumnHeader={() => this.renderColumnHeader(columnDef)}
+      />
+    ));
   }
 
   renderSortIcon(direction) {
@@ -159,7 +155,7 @@ export class SussolReactTable extends React.Component {
   render() {
     return (
       <Table {...this.props} numRows={this.state.tableData.length}>
-        {this.renderColumns()}
+        {this.renderColumns(this.props)}
       </Table>
     );
   }
