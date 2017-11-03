@@ -112,7 +112,7 @@ export class SussolReactTable extends React.Component {
     const value = tableData[rowIndex][columnKey] !== null ? tableData[rowIndex][columnKey] : '';
     return (
       <Cell
-        className={tableData[rowIndex][cellDataKey]}
+        className={`${cellDataKey}-${tableData[rowIndex][cellDataKey]}`}
       >
         {value}
       </Cell>
@@ -124,7 +124,7 @@ export class SussolReactTable extends React.Component {
     const value = tableData[rowIndex][columnKey] !== null ? tableData[rowIndex][columnKey] : '';
     return (
       <EditableCell
-        className={tableData[rowIndex][cellDataKey]}
+        className={`${cellDataKey}-${tableData[rowIndex][cellDataKey]}`}
         onConfirm={(newValue) => { this.editCell(rowIndex, columnKey, newValue); }}
         value={value}
       />
