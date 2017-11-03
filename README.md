@@ -2,7 +2,11 @@
 A wrapper and simple API for using the blueprintjs data table
 
 # Installation
-`npm install --save sussol-react-table`
+`yarn add sussol-react-table`
+
+or
+
+`npm install sussol-react-table`
 
 # Added Options
 
@@ -10,8 +14,10 @@ A wrapper and simple API for using the blueprintjs data table
 | ------------- |:-------------:| ------------ |
 | `cellDataKey` | `str`         | Pass a key (object property) from your table data set as a string. The data's key will be used to access a value &ndash; the unique key. Good for selecting the table row and loading a corresponding component, based on the selected key. e.g. `{ ... code: 123456789, ...}` |
 
-# Example
-```
+NOTE: all other blueprintjs props are passed to the root `<Table />` component.
+
+## Usage
+```javascript
 import React from 'react';
 import { SussolReactTable } from 'sussol-react-table';
 
@@ -53,8 +59,8 @@ export class App extends React.Component {
   }
 }
 ```
-You will need grab the styles and material icons via your index.html file. Make sure the path to styles is correct.
-```
+You will need grab the styles and material icons via your index.html file (or bundle them). Make sure the path to styles is correct.
+```html
 <!DOCTYPE html>
 <html>
   <head>
@@ -63,7 +69,6 @@ You will need grab the styles and material icons via your index.html file. Make 
     <link href="relative path to/node_modules/normalize.css/normalize.css" rel="stylesheet" />
     <link href="relative path to/node_modules/@blueprintjs/core/dist/blueprint.css" rel="stylesheet" />
     <link href="relative path to/node_modules/@blueprintjs/table/dist/table.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   </head>
   <body>
     <div id="root" class="container"></div>
@@ -71,5 +76,5 @@ You will need grab the styles and material icons via your index.html file. Make 
   </body>
 </html>
 ```
-# Additional docs
+## Additional docs
 Read up on the API for the [blueprintjs table component](http://blueprintjs.com/docs/#components.table-js.api).
