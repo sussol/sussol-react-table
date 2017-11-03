@@ -69,8 +69,8 @@ test('renders cells with cellDataKey', () => {
   expect(table.props().tableData.length).toBe(2);
   expect(table.props().columns.length).toBe(2);
   // find 4 total cells with the "code" className's attached
-  expect(table.find('.123').length).toBe(2);
-  expect(table.find('.456').length).toBe(2);
+  expect(table.find('.code-123').length).toBe(2);
+  expect(table.find('.code-456').length).toBe(2);
 });
 
 test('does not render cells with incorrect cellDataKey', () => {
@@ -91,6 +91,6 @@ test('does not render cells with incorrect cellDataKey', () => {
   expect(table.props().tableData.length).toBe(2);
   expect(table.props().columns.length).toBe(2);
   // find 4 total cells with the "code" className's attached
-  expect(table.find('.123').length).toBe(0);
-  expect(table.find('.456').length).toBe(0);
+  expect(table.find('.code-123').length).toBe(0);
+  expect(table.find('.code-456').length).toBe(0);
 });
