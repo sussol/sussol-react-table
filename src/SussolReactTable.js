@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Cell, ColumnHeaderCell, EditableCell, Column, Table } from '@blueprintjs/table';
 import FlatButton from 'material-ui/FlatButton';
@@ -16,21 +16,23 @@ import FlatButton from 'material-ui/FlatButton';
 */
 const compare = (a, b, isAscending) => (
   isAscending
-  ? a.toString().localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
-  : b.toString().localeCompare(a, undefined, { numeric: true, sensitivity: 'base' })
+    ? a.toString().localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
+    : b.toString().localeCompare(a, undefined, { numeric: true, sensitivity: 'base' })
 );
 
 const noop = () => {};
 
-export class SussolReactTable extends React.Component {
-  constructor(props, ...args) {
-    super(props, ...args);
+export class SussolReactTable extends PureComponent {
+  constructor(props) {
+    super(props);
+
     this.state = {
       columns: props.columns || [],
       tableData: props.tableData,
       sortBy: props.defaultSortKey || '',
       isAscending: true,
     };
+
     this.editCell = this.editCell.bind(this);
     this.renderCell = this.renderCell.bind(this);
     this.renderColumnHeader = this.renderColumnHeader.bind(this);
