@@ -1,3 +1,5 @@
+![Build Status](http://54.206.8.184:8080/buildStatus/icon?job=sussol-react-table-test)
+
 # sussol-react-table
 A wrapper and simple API for using the blueprintjs data table
 
