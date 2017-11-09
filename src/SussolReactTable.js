@@ -20,7 +20,11 @@ const compare = (a, b, isAscending) => (
     : b.toString().localeCompare(a, undefined, { numeric: true, sensitivity: 'base' })
 );
 
-const noop = () => {};
+const renderSortIcon = direction => (
+  direction === 'asc'
+    ? <svg width="18" height="18" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" /><path d="M0 0h24v24H0z" fill="none" /></svg>
+    : <svg width="18" height="18" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z" /><path d="M0 0h24v24H0z" fill="none" /></svg>
+);
 
 export class SussolReactTable extends PureComponent {
   constructor(props) {
@@ -42,15 +46,18 @@ export class SussolReactTable extends PureComponent {
     this.renderColumns = this.renderColumns.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({ tableData: nextProps.tableData });
+  componentWillReceiveProps({ tableData }) {
+    this.setState({ tableData });
   }
 
-  toggleSortOrder(columnKey) {
+  toggleSortOrder(column) {
+    if (!column.sortable) return;
+
+    const { key } = column;
     this.setState({
-      sortBy: columnKey,
+      sortBy: key,
       isAscending: !this.state.isAscending,
-      tableData: this.sortColumn(columnKey, compare),
+      tableData: this.sortColumn(key, compare),
     });
   }
 
@@ -64,32 +71,34 @@ export class SussolReactTable extends PureComponent {
   * @return {arr}     sorted array
   */
   sortColumn(columnKey, comparator) {
-    const { tableData } = this.state;
+    const { isAscending, tableData } = this.state;
     return tableData.sort((a, b) => (
       comparator(
         a[columnKey],
         b[columnKey],
-        this.state.isAscending,
+        isAscending,
       )
     ));
   }
 
   editCell(rowIndex, columnKey, newValue) {
-    const tableData = this.state.tableData;
+    const { tableData } = this.state;
     tableData[rowIndex][columnKey] = newValue;
     this.setState({
-      tableData: tableData,
+      tableData,
     });
   }
 
   // Renders column headers. Gets the sort direction from state and the label columns array.
   renderColumnHeader(column) {
     let sortIcon;
+    const { key, sortable } = column;
+    const { isAscending, sortBy } = this.state;
 
-    if (column.sortable && this.state.sortBy === column.key) {
-      sortIcon = this.state.isAscending
-        ? (this.renderSortIcon('asc'))
-        : (this.renderSortIcon('desc'));
+    if (sortable && sortBy === key) {
+      sortIcon = isAscending
+        ? (renderSortIcon('asc'))
+        : (renderSortIcon('desc'));
     }
 
     return (
@@ -98,11 +107,7 @@ export class SussolReactTable extends PureComponent {
           label={column.title}
           labelPosition="before"
           icon={sortIcon}
-          onClick={
-            column.sortable
-            ? () => this.toggleSortOrder(column.key)
-            : noop
-          }
+          onClick={() => this.toggleSortOrder(column)}
           style={{ width: '100%' }}
         />
       </ColumnHeaderCell>
@@ -110,23 +115,21 @@ export class SussolReactTable extends PureComponent {
   }
 
   renderCell(rowIndex, columnKey, { cellDataKey }) {
-    const tableData = this.state.tableData;
+    const { tableData } = this.state;
     const value = tableData[rowIndex][columnKey] !== null ? tableData[rowIndex][columnKey] : '';
-    return (
-      <Cell
-        className={`${cellDataKey}-${tableData[rowIndex][cellDataKey]}`}
-      >
-        {value}
-      </Cell>
-    );
+    const keyClassName = cellDataKey ? `${cellDataKey}-${tableData[rowIndex][cellDataKey]}` : '';
+
+    return (<Cell className={keyClassName}>{value}</Cell>);
   }
 
   renderEditableCell(rowIndex, columnKey, { cellDataKey }) {
-    const tableData = this.state.tableData;
+    const { tableData } = this.state;
     const value = tableData[rowIndex][columnKey] !== null ? tableData[rowIndex][columnKey] : '';
+    const keyClassName = cellDataKey ? `${cellDataKey}-${tableData[rowIndex][cellDataKey]}` : '';
+
     return (
       <EditableCell
-        className={`${cellDataKey}-${tableData[rowIndex][cellDataKey]}`}
+        className={keyClassName}
         onConfirm={(newValue) => { this.editCell(rowIndex, columnKey, newValue); }}
         value={value}
       />
@@ -134,24 +137,24 @@ export class SussolReactTable extends PureComponent {
   }
 
   renderColumns(props) {
-    const columnDefinitions = this.state.columns;
+    const { columns } = this.state;
+    let key = 0;
 
-    return columnDefinitions.map((columnDef, index) => (
-      <Column
-        key={index}
-        renderCell={(rowIndex) => columnDef.editable
-          ? this.renderEditableCell(rowIndex, columnDef.key, props)
-          : this.renderCell(rowIndex, columnDef.key, props)
-        }
-        renderColumnHeader={() => this.renderColumnHeader(columnDef)}
-      />
-    ));
-  }
-
-  renderSortIcon(direction) {
-    return direction === 'asc'
-      ? <svg width="18" height="18" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg>
-      : <svg width="18" height="18" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg>;
+    return columns.map((column) => {
+      key += 1;
+      return (
+        <Column
+          key={key}
+          renderCell={rowIndex => (
+            column.editable
+              ? this.renderEditableCell(rowIndex, column.key, props)
+              : this.renderCell(rowIndex, column.key, props)
+            )
+          }
+          renderColumnHeader={() => this.renderColumnHeader(column)}
+        />
+      );
+    });
   }
 
   render() {
@@ -165,13 +168,13 @@ export class SussolReactTable extends PureComponent {
 
 SussolReactTable.propTypes = {
   ...Table.propTypes,
-  columns: PropTypes.array,
-  tableData: PropTypes.array,
+  columns: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
+  tableData: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
   defaultSortKey: PropTypes.string,
-  hideSearchBar: PropTypes.bool,
   rowHeight: PropTypes.number,
 };
 
 SussolReactTable.defaultProps = {
+  defaultSortKey: '',
   rowHeight: 45,
 };

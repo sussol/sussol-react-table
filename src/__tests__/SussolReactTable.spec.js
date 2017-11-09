@@ -1,3 +1,4 @@
+/* eslint-disable function-paren-newline */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { mount, shallow } from 'enzyme';
@@ -27,8 +28,8 @@ test('renders table', () => {
     <SussolReactTable
       columns={[]}
       tableData={[]}
-    />
-  )
+    />,
+  );
 
   expect(table.find('Table').length).toBe(1);
 });
@@ -43,9 +44,9 @@ test('renders table with props', () => {
         key: 'code',
         title: 'Code',
       }]}
-      tableData={[{ name: 'hello', code: 123}]}
-    />
-  )
+      tableData={[{ name: 'hello', code: 123 }]}
+    />,
+  );
 
   expect(table.props().tableData.length).toBe(1);
   expect(table.props().columns.length).toBe(2);
@@ -63,8 +64,8 @@ test('renders cells with cellDataKey', () => {
         title: 'Code',
       }]}
       tableData={[{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }]}
-    />
-  )
+    />,
+  );
 
   expect(table.props().tableData.length).toBe(2);
   expect(table.props().columns.length).toBe(2);
@@ -85,8 +86,8 @@ test('does not render cells with incorrect cellDataKey', () => {
         title: 'Code',
       }]}
       tableData={[{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }]}
-    />
-  )
+    />,
+  );
 
   expect(table.props().tableData.length).toBe(2);
   expect(table.props().columns.length).toBe(2);

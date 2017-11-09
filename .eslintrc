@@ -1,9 +1,25 @@
 {
   "extends": "airbnb",
+  "globals": {
+    // Jest Globals
+    // https://facebook.github.io/jest/docs/api.html
+    "afterAll": true,
+    "afterEach": true,
+    "beforeAll": true,
+    "beforeEach": true,
+    "describe": true,
+    "expect": true,
+    "jest": true,
+    "test": true,
+    // global polyfill - no imports
+    "fetch": true,
+    // DOM
+    "document": true,
+    "window": true,
+  },
   "parser": "babel-eslint",
   "rules": {
-    "jsx-boolean-value": "always",
-    "object-shorthand": "off",
-  },
-  "new-cap": ["error", {"capIsNewExceptions": ["Dimensions", "UserIsAuthenticated", "UserAuthWrapper"]}]
+    "import/prefer-default-export": "off",
+    "react/jsx-filename-extension": "off"
+  }
 }
