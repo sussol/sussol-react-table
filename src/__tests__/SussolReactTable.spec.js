@@ -95,3 +95,62 @@ test('does not render cells with incorrect cellDataKey', () => {
   expect(table.find('.code-123').length).toBe(0);
   expect(table.find('.code-456').length).toBe(0);
 });
+
+test('table sorts default ascending', () => {
+  const table = MountWithMuiContext(
+    <SussolReactTable
+      cellDataKey="blahblah"
+      columns={[{
+        key: 'name',
+        title: 'Name',
+      }, {
+        key: 'code',
+        title: 'Code',
+      }]}
+      defaultSortKey="name"
+      tableData={[{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }]}
+    />,
+  );
+  expect(table.find('Cell').nodes[0].props.children).toBe('hello');
+  expect(table.find('Cell').nodes[2].props.children).toBe('hey-hey');
+});
+
+test('table sorts descending with defaultSortOrder="desc"', () => {
+  const table = MountWithMuiContext(
+    <SussolReactTable
+      cellDataKey="blahblah"
+      columns={[{
+        key: 'name',
+        title: 'Name',
+      }, {
+        key: 'code',
+        title: 'Code',
+      }]}
+      defaultSortKey="name"
+      defaultSortOrder="desc"
+      tableData={[{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }]}
+    />,
+  );
+  expect(table.find('Cell').nodes[0].props.children).toBe('hey-hey');
+  expect(table.find('Cell').nodes[2].props.children).toBe('hello');
+});
+
+test('table sorts ascending with defaultSortOrder="asc"', () => {
+  const table = MountWithMuiContext(
+    <SussolReactTable
+      cellDataKey="blahblah"
+      columns={[{
+        key: 'name',
+        title: 'Name',
+      }, {
+        key: 'code',
+        title: 'Code',
+      }]}
+      defaultSortKey="code"
+      defaultSortOrder="asc"
+      tableData={[{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }]}
+    />,
+  );
+  expect(table.find('Cell').nodes[1].props.children).toBe(123);
+  expect(table.find('Cell').nodes[3].props.children).toBe(456);
+});

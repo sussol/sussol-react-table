@@ -14,12 +14,18 @@ or
 
 | Prop          | Type          | Description  |
 | ------------- |:-------------:| ------------ |
-| `cellDataKey` | `str`         | Pass a key (object property) from your table data set as a string. The data's key will be used to access a value &ndash; the unique key. Good for selecting the table row and loading a corresponding component, based on the selected key. e.g. `{ ... code: 123456789, ...}` |
+| `cellDataKey` | `String`      | Pass a key (object property) from your table data set as a string. The data's key will be used to access a value &ndash; the unique key. Good for selecting the table row and loading a corresponding component, based on the selected key. e.g. `{ ... code: 123456789, ...}` |
+| `columns`     | `Array`| `[{ key: String, title: String, ?sortable: Boolean}]` Column headers for the table. |
+| `tableData`   | `Array` | `[{ any }]` Must contain at least the valid `columns` keys. |
+| `defaultSortKey` | `String` | The default column key for sorting the table data. If no key is set, nothing is done. **Be sure your data already exists when the component initialises** (i.e. `{this.state.data.length && ...`). |
+| `defaultSortOrder` | `String` | `<"asc", "desc">` If `defaultSortKey` is set, determines the default column sort direction on initialisation. Prop defaults to `"asc"`. |
 
-NOTE: all other blueprintjs props are passed to the root `<Table />` component.
+NOTE:
+
+* All other blueprintjs Table props are passed to its root `<Table />` component.
 
 ## Usage
-```javascript
+```js
 import React from 'react';
 import { SussolReactTable } from 'sussol-react-table';
 
@@ -61,22 +67,20 @@ export class App extends React.Component {
   }
 }
 ```
-You will need grab the styles via your index.html file (or bundle them). Make sure the path to styles is correct.
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Your Title</title>
-    <link href="relative path to/node_modules/normalize.css/normalize.css" rel="stylesheet" />
-    <link href="relative path to/node_modules/@blueprintjs/core/dist/blueprint.css" rel="stylesheet" />
-    <link href="relative path to/node_modules/@blueprintjs/table/dist/table.css" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="root" class="container"></div>
-    <script src="http://localhost:8080/build/bundle.js" charset="utf-8"></script>
-  </body>
-</html>
-```
+
+## Required style dependencies
+You will need include the following styles via your `index.html` (or by bundling them). Make sure the path to styles is correct.
+
+* `path/to/node_modules/@blueprintjs/core/dist/blueprint.css`
+* `path/to/node_modules/@blueprintjs/table/dist/table.css`
+* `path/to/node_modules/normalize.css/normalize.css` (good for resetting to safe, base styles for most all browsers)
+
+## Testing locally via another project
+
+1. From inside `sussol-react-table` run `yarn build`
+2. From your project run `yarn add file:path/to/sussol-react-table`
+3. Run your project
+
 ## Additional docs
+
 Read up on the API for the [blueprintjs table component](http://blueprintjs.com/docs/#components.table-js.api).

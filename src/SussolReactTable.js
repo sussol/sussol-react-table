@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Cell, ColumnHeaderCell, EditableCell, Column, Table } from '@blueprintjs/table';
 import FlatButton from 'material-ui/FlatButton';
 
+const DEFAULT_SORT = 'asc';
+
 /**
 * compare
 *
@@ -22,26 +24,54 @@ const compare = (a, b, isAscending) => (
 
 const renderSortIcon = direction => (
   direction === 'asc'
-    ? <svg width="18" height="18" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" /><path d="M0 0h24v24H0z" fill="none" /></svg>
-    : <svg width="18" height="18" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z" /><path d="M0 0h24v24H0z" fill="none" /></svg>
+    ? <svg width="18" height="18" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z" /><path d="M0 0h24v24H0z" fill="none" /></svg>
+    : <svg width="18" height="18" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" /><path d="M0 0h24v24H0z" fill="none" /></svg>
+);
+
+/**
+* sortColumn
+*
+* Provides sorted data: ASC or DESC given a column key and a comparator func.
+*
+* @param {str}      columnKey: column key string
+* @param {func}     comparator: sort func
+* @return {arr}     sorted array
+*/
+const sortColumn = (columnKey, comparator, tableData, isAscending) => (
+  tableData.sort((a, b) => (
+    comparator(
+      a[columnKey],
+      b[columnKey],
+      isAscending,
+    )
+  ))
 );
 
 export class SussolReactTable extends PureComponent {
   constructor(props) {
     super(props);
 
+    // initial state
+    const { columns, defaultSortOrder, defaultSortKey } = props;
+
+    const sortOrderToBool = defaultSortOrder === DEFAULT_SORT;
+    const isAscending = sortOrderToBool;
+    const tableData = defaultSortKey
+      ? sortColumn(defaultSortKey, compare, props.tableData, isAscending)
+      : props.tableData;
+
     this.state = {
-      columns: props.columns || [],
-      tableData: props.tableData,
-      sortBy: props.defaultSortKey || '',
-      isAscending: true,
+      columns,
+      isAscending,
+      sortBy: defaultSortKey || '',
+      tableData,
     };
 
+    // bindings
     this.editCell = this.editCell.bind(this);
     this.renderCell = this.renderCell.bind(this);
     this.renderColumnHeader = this.renderColumnHeader.bind(this);
     this.renderEditableCell = this.renderEditableCell.bind(this);
-    this.sortColumn = this.sortColumn.bind(this);
     this.toggleSortOrder = this.toggleSortOrder.bind(this);
     this.renderColumns = this.renderColumns.bind(this);
   }
@@ -54,31 +84,14 @@ export class SussolReactTable extends PureComponent {
     if (!column.sortable) return;
 
     const { key } = column;
+    const { isAscending, tableData } = this.state;
+    const sortedTableData = sortColumn(key, compare, tableData, !isAscending);
+
     this.setState({
       sortBy: key,
       isAscending: !this.state.isAscending,
-      tableData: this.sortColumn(key, compare),
+      tableData: sortedTableData,
     });
-  }
-
-  /**
-  * sortColumn
-  *
-  * Provides sorted data: ASC or DESC given a column key and a comparator func.
-  *
-  * @param {str}      columnKey: column key string
-  * @param {func}     comparator: sort func
-  * @return {arr}     sorted array
-  */
-  sortColumn(columnKey, comparator) {
-    const { isAscending, tableData } = this.state;
-    return tableData.sort((a, b) => (
-      comparator(
-        a[columnKey],
-        b[columnKey],
-        isAscending,
-      )
-    ));
   }
 
   editCell(rowIndex, columnKey, newValue) {
@@ -175,6 +188,8 @@ SussolReactTable.propTypes = {
 };
 
 SussolReactTable.defaultProps = {
+  columns: [],
   defaultSortKey: '',
+  defaultSortOrder: DEFAULT_SORT,
   rowHeight: 45,
 };
