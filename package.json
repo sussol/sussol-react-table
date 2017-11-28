@@ -15,7 +15,7 @@
   "url": "http://github.com/sussol/sussol-react-table",
   "homepage": "http://sussol.net",
   "scripts": {
-    "build": "babel --presets stage-0,env src --out-dir lib",
+    "build": "babel --presets stage-0,env --ignore '**/__tests__' src --out-dir lib",
     "lint": "eslint ./ --ext=\".js,.jsx\" --ignore-pattern __tests__/ --ignore-pattern __mocks__/ --ignore-pattern node_modules/ --ignore-pattern lib/ --ignore-pattern examples/",
     "prepare": "yarn build",
     "test": "jest src/__tests__/SussolReactTable.spec.js"
