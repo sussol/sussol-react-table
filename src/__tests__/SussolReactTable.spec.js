@@ -154,3 +154,31 @@ test('table sorts ascending with defaultSortOrder="asc"', () => {
   expect(table.find('Cell').nodes[1].props.children).toBe(123);
   expect(table.find('Cell').nodes[3].props.children).toBe(456);
 });
+
+// sorry for the direct instance method call;
+// their component is hard to simulate events on
+// better than no test at all
+test('table edit callback given correct data on editCell() called', () => {
+  const spy = jest.fn();
+  const table = MountWithMuiContext(
+    <SussolReactTable
+      columns={[{
+        key: 'name',
+        title: 'Name',
+      }, {
+        key: 'code',
+        title: 'Code',
+      }]}
+      onEditableCellChange={spy}
+      tableData={[{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }]}
+    />,
+  );
+
+  table.instance().editCell(0, 'name', 'meow');
+  // number of times called
+  expect(spy.mock.calls.length).toBe(1);
+  // args sent back to callback ("spy")
+  expect(spy.mock.calls[0][0]).toBe('meow');
+  expect(spy.mock.calls[0][1].row).toBe(0);
+  expect(spy.mock.calls[0][1].column).toBe('name');
+});
