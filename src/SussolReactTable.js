@@ -100,6 +100,7 @@ export class SussolReactTable extends PureComponent {
     this.setState({
       tableData,
     });
+    this.props.onEditableCellChange(newValue, { row: rowIndex, column: columnKey });
   }
 
   // Renders column headers. Gets the sort direction from state and the label columns array.
@@ -139,11 +140,10 @@ export class SussolReactTable extends PureComponent {
     const { tableData } = this.state;
     const value = tableData[rowIndex][columnKey] !== null ? tableData[rowIndex][columnKey] : '';
     const keyClassName = cellDataKey ? `${cellDataKey}-${tableData[rowIndex][cellDataKey]}` : '';
-
     return (
       <EditableCell
         className={keyClassName}
-        onConfirm={(newValue) => { this.editCell(rowIndex, columnKey, newValue); }}
+        onChange={(newValue) => { this.editCell(rowIndex, columnKey, newValue); }}
         value={value}
       />
     );
@@ -184,6 +184,7 @@ SussolReactTable.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
   tableData: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
   defaultSortKey: PropTypes.string,
+  onEditableCellChange: PropTypes.func,
   rowHeight: PropTypes.number,
 };
 
@@ -191,5 +192,6 @@ SussolReactTable.defaultProps = {
   columns: [],
   defaultSortKey: '',
   defaultSortOrder: DEFAULT_SORT,
+  onEditableCellChange: () => {},
   rowHeight: 45,
 };

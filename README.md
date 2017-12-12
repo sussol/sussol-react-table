@@ -19,6 +19,8 @@ or
 | `tableData`   | `Array` | `[{ any }]` Must contain at least the valid `columns` keys. |
 | `defaultSortKey` | `String` | The default column key for sorting the table data. If no key is set, nothing is done. **Be sure your data already exists when the component initialises** (i.e. `{this.state.data.length && ...`). |
 | `defaultSortOrder` | `String` | `<"asc", "desc">` If `defaultSortKey` is set, determines the default column sort direction on initialisation. Prop defaults to `"asc"`. |
+| `defaultSortOrder` | `String` | `"asc|desc"` If `defaultSortKey` is set, determines the default column sort direction on initialisation. Defaults to `"asc"`. |
+| `onEditableCellChange` | `Function` | Given a handler function, it will return the value (string), and an object consisting of the row index (integer) and column key (string). Use these values to update your state. `handlerFunc(value, { row, column }) => ...` |
 
 NOTE:
 
