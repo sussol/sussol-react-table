@@ -4,6 +4,27 @@ import { Cell, ColumnHeaderCell, EditableCell, Column, Table } from '@blueprintj
 import FlatButton from 'material-ui/FlatButton';
 
 const DEFAULT_SORT = 'asc';
+const DEFAULT_COLUMN_ALIGN = 'left';
+
+const styles = {
+  cell: {
+    textAlign: 'left',
+  },
+  getCellStyles: function cellStyles(align) { // eslint-disable-line object-shorthand
+    const map = {
+      left: 'left',
+      center: 'center',
+      right: 'right',
+    };
+
+    // return enum mapped value, else default if invalid enum
+    return Object.assign(
+      {},
+      this.cell,
+      { textAlign: map[align] ? map[align] : DEFAULT_COLUMN_ALIGN },
+    );
+  },
+};
 
 /**
 * compare
@@ -128,12 +149,13 @@ export class SussolReactTable extends PureComponent {
     );
   }
 
-  renderCell(rowIndex, columnKey, { cellDataKey }) {
+  renderCell(rowIndex, { align, key }, { cellDataKey }) {
     const { tableData } = this.state;
-    const value = tableData[rowIndex][columnKey] !== null ? tableData[rowIndex][columnKey] : '';
+    const value = tableData[rowIndex][key] !== null ? tableData[rowIndex][key] : '';
     const keyClassName = cellDataKey ? `${cellDataKey}-${tableData[rowIndex][cellDataKey]}` : '';
+    const cellAlign = align || this.props.defaultColumnAlign;
 
-    return (<Cell className={keyClassName}>{value}</Cell>);
+    return (<Cell className={keyClassName} style={styles.getCellStyles(cellAlign)}>{value}</Cell>);
   }
 
   renderEditableCell(rowIndex, columnKey, { cellDataKey }) {
@@ -161,7 +183,7 @@ export class SussolReactTable extends PureComponent {
           renderCell={rowIndex => (
             column.editable
               ? this.renderEditableCell(rowIndex, column.key, props)
-              : this.renderCell(rowIndex, column.key, props)
+              : this.renderCell(rowIndex, column, props)
             )
           }
           renderColumnHeader={() => this.renderColumnHeader(column)}
@@ -190,6 +212,7 @@ SussolReactTable.propTypes = {
 
 SussolReactTable.defaultProps = {
   columns: [],
+  defaultColumnAlign: DEFAULT_COLUMN_ALIGN,
   defaultSortKey: '',
   defaultSortOrder: DEFAULT_SORT,
   onEditableCellChange: () => {},

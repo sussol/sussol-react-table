@@ -155,6 +155,105 @@ test('table sorts ascending with defaultSortOrder="asc"', () => {
   expect(table.find('Cell').nodes[3].props.children).toBe(456);
 });
 
+test('table aligns all cells based defaultColumnAlign', () => {
+  const table = MountWithMuiContext(
+    <SussolReactTable
+      cellDataKey="blahblah"
+      columns={[{
+        key: 'name',
+        title: 'Name',
+      }, {
+        key: 'code',
+        title: 'Code',
+      }]}
+      defaultColumnAlign="right"
+      defaultSortKey="code"
+      defaultSortOrder="asc"
+      tableData={[{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }]}
+    />,
+  );
+
+  table.find('Cell').nodes.forEach((cell) => {
+    expect(cell.props.style.textAlign === 'right').toBe(true);
+  });
+});
+
+test('table aligns defaults based defaultColumnAlign', () => {
+  const table = MountWithMuiContext(
+    <SussolReactTable
+      cellDataKey="blahblah"
+      columns={[{
+        key: 'name',
+        title: 'Name',
+      }, {
+        key: 'code',
+        title: 'Code',
+      }]}
+      defaultColumnAlign="right"
+      defaultSortKey="code"
+      defaultSortOrder="asc"
+      tableData={[{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }]}
+    />,
+  );
+
+  table.find('Cell').nodes.forEach((cell) => {
+    expect(cell.props.style.textAlign === 'right').toBe(true);
+  });
+});
+
+test('table aligns defaults to DEFAULT_COLUMN_ALIGN when wrong enum; based defaultColumnAlign', () => {
+  const table = MountWithMuiContext(
+    <SussolReactTable
+      cellDataKey="blahblah"
+      columns={[{
+        key: 'name',
+        title: 'Name',
+      }, {
+        key: 'code',
+        title: 'Code',
+      }, {
+        key: 'price',
+        title: 'Price',
+      }]}
+      defaultColumnAlign="WHATEVER"
+      defaultSortKey="code"
+      defaultSortOrder="asc"
+      tableData={[{ name: 'hello', code: 123, price: 1 }, { name: 'hey-hey', code: 456, price: 2 }, { name: 'hey-hey', code: 789, price: 3 }]}
+    />,
+  );
+  expect(table.find('Cell').nodes[0].props.style.textAlign === 'left').toBe(true);
+  expect(table.find('Cell').nodes[1].props.style.textAlign === 'left').toBe(true);
+  expect(table.find('Cell').nodes[2].props.style.textAlign === 'left').toBe(true);
+});
+
+test('table aligns individual cells to DEFAULT_COLUMN_ALIGN when wrong enum; based on column.align; column.align takes precedence', () => {
+  const table = MountWithMuiContext(
+    <SussolReactTable
+      cellDataKey="blahblah"
+      columns={[{
+        key: 'name',
+        title: 'Name',
+        align: 'crap',
+      }, {
+        key: 'code',
+        title: 'Code',
+        align: 'ew',
+      }, {
+        key: 'price',
+        title: 'Price',
+        align: 'nasty',
+      }]}
+      defaultColumnAlign="right"
+      defaultSortKey="code"
+      defaultSortOrder="asc"
+      tableData={[{ name: 'hello', code: 123, price: 1 }, { name: 'hey-hey', code: 456, price: 2 }, { name: 'hey-hey', code: 789, price: 3 }]}
+    />,
+  );
+  expect(table.find('Cell').nodes[0].props.style.textAlign === 'left').toBe(true);
+  expect(table.find('Cell').nodes[1].props.style.textAlign === 'left').toBe(true);
+  expect(table.find('Cell').nodes[2].props.style.textAlign === 'left').toBe(true);
+});
+
 // sorry for the direct instance method call;
 // their component is hard to simulate events on
 // better than no test at all
