@@ -115,13 +115,13 @@ export class SussolReactTable extends PureComponent {
     });
   }
 
-  editCell(rowIndex, columnKey, newValue) {
+  editCell(newValue, rowIndex, columnIndex, columnKey) {
     const { tableData } = this.state;
     tableData[rowIndex][columnKey] = newValue;
     this.setState({
       tableData,
     });
-    this.props.onEditableCellChange(newValue, { row: rowIndex, column: columnKey });
+    this.props.onEditableCellChange(newValue, { row: rowIndex, column: columnIndex, columnKey });
   }
 
   // Renders column headers. Gets the sort direction from state and the label columns array.
@@ -149,7 +149,7 @@ export class SussolReactTable extends PureComponent {
     );
   }
 
-  renderCell(rowIndex, { align, key }, { cellDataKey }) {
+  renderCell(rowIndex, columnIndex, { align, key }, { cellDataKey }) {
     const { tableData } = this.state;
     const value = tableData[rowIndex][key] !== null ? tableData[rowIndex][key] : '';
     const keyClassName = cellDataKey ? `${cellDataKey}-${tableData[rowIndex][cellDataKey]}` : '';
@@ -158,14 +158,16 @@ export class SussolReactTable extends PureComponent {
     return (<Cell className={keyClassName} style={styles.getCellStyles(cellAlign)}>{value}</Cell>);
   }
 
-  renderEditableCell(rowIndex, columnKey, { cellDataKey }) {
+  renderEditableCell(rowIndex, columnIndex, columnKey, { cellDataKey }) {
     const { tableData } = this.state;
     const value = tableData[rowIndex][columnKey] !== null ? tableData[rowIndex][columnKey] : '';
     const keyClassName = cellDataKey ? `${cellDataKey}-${tableData[rowIndex][cellDataKey]}` : '';
     return (
       <EditableCell
         className={keyClassName}
-        onChange={(newValue) => { this.editCell(rowIndex, columnKey, newValue); }}
+        onChange={(newValue) => {
+          this.editCell(newValue, rowIndex, columnIndex, columnKey);
+        }}
         value={value}
       />
     );
@@ -180,12 +182,11 @@ export class SussolReactTable extends PureComponent {
       return (
         <Column
           key={key}
-          renderCell={rowIndex => (
+          renderCell={(rowIndex, columnIndex) => (
             column.editable
-              ? this.renderEditableCell(rowIndex, column.key, props)
-              : this.renderCell(rowIndex, column, props)
-            )
-          }
+              ? this.renderEditableCell(rowIndex, columnIndex, column.key, props)
+              : this.renderCell(rowIndex, columnIndex, column, props)
+          )}
           renderColumnHeader={() => this.renderColumnHeader(column)}
         />
       );

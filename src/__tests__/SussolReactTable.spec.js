@@ -273,11 +273,12 @@ test('table edit callback given correct data on editCell() called', () => {
     />,
   );
 
-  table.instance().editCell(0, 'name', 'meow');
+  table.instance().editCell('meow', 0, 0, 'name');
   // number of times called
   expect(spy.mock.calls.length).toBe(1);
   // args sent back to callback ("spy")
   expect(spy.mock.calls[0][0]).toBe('meow');
   expect(spy.mock.calls[0][1].row).toBe(0);
-  expect(spy.mock.calls[0][1].column).toBe('name');
+  expect(spy.mock.calls[0][1].column).toBe(0);
+  expect(spy.mock.calls[0][1].columnKey).toBe('name');
 });
