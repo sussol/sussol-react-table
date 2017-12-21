@@ -20,7 +20,7 @@ or
 | `defaultColumnAlign` | `String` | `"left|center|right"` The CSS text alignment for **all** table cells. Defaults to `"left"`. A column's `align` key takes precedence. |
 | `defaultSortKey` | `String` | The default column key for sorting the table data. If no key is set, nothing is done. **Be sure your data already exists when the component initialises** (i.e. `{this.state.data.length && ...`). |
 | `defaultSortOrder` | `String` | `"asc|desc"` If `defaultSortKey` is set, determines the default column sort direction on initialisation. Defaults to `"asc"`. |
-| `onEditableCellChange` | `Function` | Given a handler function, it will return the value (string), and an object consisting of the row index (integer) and column key (string). Use these values to update your state. `handlerFunc(value, { row, column }) => ...` |
+| `editableCellProps` | `Object` | An object of Blueprint `<EditableCell />` props to pass through. All handler functions will be passed `value: String, row: Number, { column:Number, columnKey:String }:Object`, which differs slightly from the default implementation options. |
 
 NOTE:
 

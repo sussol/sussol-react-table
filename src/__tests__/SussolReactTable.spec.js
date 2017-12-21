@@ -253,32 +253,3 @@ test('table aligns individual cells to DEFAULT_COLUMN_ALIGN when wrong enum; bas
   expect(table.find('Cell').nodes[1].props.style.textAlign === 'left').toBe(true);
   expect(table.find('Cell').nodes[2].props.style.textAlign === 'left').toBe(true);
 });
-
-// sorry for the direct instance method call;
-// their component is hard to simulate events on
-// better than no test at all
-test('table edit callback given correct data on editCell() called', () => {
-  const spy = jest.fn();
-  const table = MountWithMuiContext(
-    <SussolReactTable
-      columns={[{
-        key: 'name',
-        title: 'Name',
-      }, {
-        key: 'code',
-        title: 'Code',
-      }]}
-      onEditableCellChange={spy}
-      tableData={[{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }]}
-    />,
-  );
-
-  table.instance().editCell('meow', 0, 0, 'name');
-  // number of times called
-  expect(spy.mock.calls.length).toBe(1);
-  // args sent back to callback ("spy")
-  expect(spy.mock.calls[0][0]).toBe('meow');
-  expect(spy.mock.calls[0][1].row).toBe(0);
-  expect(spy.mock.calls[0][1].column).toBe(0);
-  expect(spy.mock.calls[0][1].columnKey).toBe('name');
-});

@@ -89,7 +89,6 @@ export class SussolReactTable extends PureComponent {
     };
 
     // bindings
-    this.editCell = this.editCell.bind(this);
     this.renderCell = this.renderCell.bind(this);
     this.renderColumnHeader = this.renderColumnHeader.bind(this);
     this.renderEditableCell = this.renderEditableCell.bind(this);
@@ -113,15 +112,6 @@ export class SussolReactTable extends PureComponent {
       isAscending: !this.state.isAscending,
       tableData: sortedTableData,
     });
-  }
-
-  editCell(newValue, rowIndex, columnIndex, columnKey) {
-    const { tableData } = this.state;
-    tableData[rowIndex][columnKey] = newValue;
-    this.setState({
-      tableData,
-    });
-    this.props.onEditableCellChange(newValue, { row: rowIndex, column: columnIndex, columnKey });
   }
 
   // Renders column headers. Gets the sort direction from state and the label columns array.
@@ -164,11 +154,13 @@ export class SussolReactTable extends PureComponent {
     const keyClassName = cellDataKey ? `${cellDataKey}-${tableData[rowIndex][cellDataKey]}` : '';
     return (
       <EditableCell
-        className={keyClassName}
-        onChange={(newValue) => {
-          this.editCell(newValue, rowIndex, columnIndex, columnKey);
-        }}
+        {...this.props.editableCellProps}
+        // sorry to possibly thwart your propTypes,
+        // but we need more than just the columnIndex, Blueprint!
+        columnIndex={{ column: columnIndex, columnKey }}
+        rowIndex={rowIndex}
         value={value}
+        className={keyClassName}
       />
     );
   }
