@@ -96,8 +96,27 @@ export class SussolReactTable extends PureComponent {
     this.renderColumns = this.renderColumns.bind(this);
   }
 
+  componentDidMount() {
+    if (this.state.tableData.length === 0) this.generateLoadingRows();
+  }
+
   componentWillReceiveProps({ tableData }) {
-    this.setState({ tableData });
+    this.setState({ tableData, dataLoading: !(tableData.length > 0) });
+  }
+
+  generateLoadingRows(rowCount = this.props.loadingRowCount) {
+    if (rowCount === 0) return;
+    const rows = [];
+    const { columns } = this.state;
+    for (let i = 0; i < rowCount; i += 1) {
+      rows.push({});
+
+      for (let j = 0; j < columns.length; j += 1) {
+        rows[i][columns[j].key] = columns[j].key;
+      }
+    }
+
+    this.setState({ tableData: rows, dataLoading: true });
   }
 
   toggleSortOrder(column) {
@@ -140,12 +159,19 @@ export class SussolReactTable extends PureComponent {
   }
 
   renderCell(rowIndex, columnIndex, { align, key }, { cellDataKey }) {
-    const { tableData } = this.state;
+    const { dataLoading, tableData } = this.state;
     const value = tableData[rowIndex][key] !== null ? tableData[rowIndex][key] : '';
     const keyClassName = cellDataKey ? `${cellDataKey}-${tableData[rowIndex][cellDataKey]}` : '';
     const cellAlign = align || this.props.defaultColumnAlign;
-
-    return (<Cell className={keyClassName} style={styles.getCellStyles(cellAlign)}>{value}</Cell>);
+    return (
+      <Cell
+        loading={dataLoading}
+        className={keyClassName}
+        style={styles.getCellStyles(cellAlign)}
+      >
+        {value}
+      </Cell>
+    );
   }
 
   renderEditableCell(rowIndex, columnIndex, columnKey, { cellDataKey }) {
@@ -187,7 +213,7 @@ export class SussolReactTable extends PureComponent {
 
   render() {
     return (
-      <Table {...this.props} numRows={this.state.tableData.length}>
+      <Table {...this.props} numRows={(this.state.tableData.length)}>
         {this.renderColumns(this.props)}
       </Table>
     );
@@ -199,6 +225,7 @@ SussolReactTable.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
   tableData: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
   defaultSortKey: PropTypes.string,
+  loadingRowCount: PropTypes.number,
   onEditableCellChange: PropTypes.func,
   rowHeight: PropTypes.number,
 };
@@ -208,6 +235,7 @@ SussolReactTable.defaultProps = {
   defaultColumnAlign: DEFAULT_COLUMN_ALIGN,
   defaultSortKey: '',
   defaultSortOrder: DEFAULT_SORT,
+  loadingRowCount: 0,
   onEditableCellChange: () => {},
   rowHeight: 45,
 };
