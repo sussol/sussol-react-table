@@ -21,6 +21,7 @@ or
 | `defaultSortKey` | `String` | The default column key for sorting the table data. If no key is set, nothing is done. **Be sure your data already exists when the component initialises** (i.e. `{this.state.data.length && ...`). |
 | `defaultSortOrder` | `String` | `"asc|desc"` If `defaultSortKey` is set, determines the default column sort direction on initialisation. Defaults to `"asc"`. |
 | `editableCellProps` | `Object` | An object of Blueprint `<EditableCell />` props to pass through. All handler functions will be passed `value: String, row: Number, { column:Number, columnKey:String }:Object`, which differs slightly from the default implementation options. |
+| `loadingRowCount` | `Number` | If set, table will show the core loading state for rows/cells equal to the value of `loadingRowCount`. Defaults to `0`. |
 
 NOTE:
 
