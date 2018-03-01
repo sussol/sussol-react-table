@@ -68,9 +68,9 @@
     tether "^1.4"
     tslib "^1.5.0"
 
-"@blueprintjs/core@^1.32.0":
-  version "1.33.0"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-1.33.0.tgz#8c48924e8cb9df2c154f1a1d3c8087c02af70196"
+"@blueprintjs/core@^1.35.3":
+  version "1.35.5"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-1.35.5.tgz#0474a3c701f93cc533d42a2b3546d094c1d0a0dd"
   dependencies:
     "@types/dom4" "^1.5.20"
     "@types/tether" "^1.1.27"
@@ -81,11 +81,11 @@
     tether "^1.4"
     tslib "^1.5.0"
 
-"@blueprintjs/table@^1.30.0":
-  version "1.30.0"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/table/-/table-1.30.0.tgz#11ef3259650ea7e86cabd0e56a24c80d05a2a0d8"
+"@blueprintjs/table@^1.31.2":
+  version "1.31.2"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/table/-/table-1.31.2.tgz#7f6db681aaa95fb24e9abcbb1ce187d4ead8971e"
   dependencies:
-    "@blueprintjs/core" "^1.32.0"
+    "@blueprintjs/core" "^1.35.3"
     classnames "^2.2"
     es6-shim "^0.35"
     pure-render-decorator "^1.1"

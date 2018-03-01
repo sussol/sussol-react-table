@@ -14,8 +14,10 @@ or
 
 | Prop          | Type          | Description  |
 | ------------- |:-------------:| ------------ |
+| `cellAutoHeight` | `Boolean` | Defaults to `false`. If `true` the table will adjust the `<Cell />` height to fit the length of the content. Use with `wrapText: true` inside `coreCellProps`. |
 | `cellDataKey` | `String`      | Pass a key (object property) from your table data set as a string. The data's key will be used to access a value &ndash; the unique key. Good for selecting the table row and loading a corresponding component, based on the selected key. e.g. `{ ... code: 123456789, ...}` |
 | `columns`     | `Array`| `[{ key: String, title: String, ?sortable: Boolean, ?align: "left|center|right" }]` Column headers for the table. |
+| `coreCellProps` | `Object` | Pass any core Blueprint `<Table />` props through. |
 | `tableData`   | `Array` | `[{ any }]` Must contain at least the valid `columns` keys. |
 | `defaultColumnAlign` | `String` | `"left|center|right"` The CSS text alignment for **all** table cells. Defaults to `"left"`. A column's `align` key takes precedence. |
 | `defaultSortKey` | `String` | The default column key for sorting the table data. If no key is set, nothing is done. **Be sure your data already exists when the component initialises** (i.e. `{this.state.data.length && ...`). |

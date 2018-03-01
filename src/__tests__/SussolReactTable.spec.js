@@ -8,6 +8,8 @@ import { SussolReactTable } from '../';
 
 const muiTheme = getMuiTheme();
 
+const createStringOfLength = length => new Array(length).fill('a').join('');
+
 /**
 * MountWithMuiContext
 *
@@ -252,4 +254,68 @@ test('table aligns individual cells to DEFAULT_COLUMN_ALIGN when wrong enum; bas
   expect(table.find('Cell').nodes[0].props.style.textAlign === 'left').toBe(true);
   expect(table.find('Cell').nodes[1].props.style.textAlign === 'left').toBe(true);
   expect(table.find('Cell').nodes[2].props.style.textAlign === 'left').toBe(true);
+});
+
+test('cellAutoHeight causes cells to change height', () => {
+  const table = MountWithMuiContext(
+    <SussolReactTable
+      cellAutoHeight
+      coreCellProps={{ wrapText: true }}
+      columns={[{
+        key: 'name',
+        title: 'Name',
+        align: 'crap',
+      }, {
+        key: 'code',
+        title: 'Code',
+        align: 'ew',
+      }, {
+        key: 'price',
+        title: 'Price',
+        align: 'nasty',
+      }]}
+      columnWidths={[130, 227, 130]}
+      tableData={[
+        { name: createStringOfLength(100), code: 123, price: 1 },
+        { name: createStringOfLength(100), code: 456, price: 2 },
+        { name: createStringOfLength(120), code: 789, price: 3 },
+      ]}
+    />,
+  );
+
+  table.update();
+
+  expect(table.find('Cell').nodes[0].props.style.height).toBe('162px');
+});
+
+test('cellAutoHeight=false causes cells to remain same default height', () => {
+  const table = MountWithMuiContext(
+    <SussolReactTable
+      cellAutoHeight={false}
+      coreCellProps={{ wrapText: true }}
+      columns={[{
+        key: 'name',
+        title: 'Name',
+        align: 'crap',
+      }, {
+        key: 'code',
+        title: 'Code',
+        align: 'ew',
+      }, {
+        key: 'price',
+        title: 'Price',
+        align: 'nasty',
+      }]}
+      columnWidths={[130, 227, 130]}
+      tableData={[
+        { name: createStringOfLength(100), code: 123, price: 1 },
+        { name: createStringOfLength(100), code: 456, price: 2 },
+        { name: createStringOfLength(120), code: 789, price: 3 },
+      ]}
+    />,
+  );
+
+  table.update();
+
+  expect(table.find('Cell').nodes[0].props.style.height).toBe('20px');
 });

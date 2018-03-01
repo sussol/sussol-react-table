@@ -8,9 +8,9 @@ const DEFAULT_COLUMN_ALIGN = 'left';
 
 const styles = {
   cell: {
-    textAlign: 'left',
+    textAlign: DEFAULT_COLUMN_ALIGN,
   },
-  getCellStyles: function cellStyles(align) { // eslint-disable-line object-shorthand
+  getCellStyles: function cellStyles(align, corePropStyle) { // eslint-disable-line object-shorthand
     const map = {
       left: 'left',
       center: 'center',
@@ -18,11 +18,10 @@ const styles = {
     };
 
     // return enum mapped value, else default if invalid enum
-    return Object.assign(
-      {},
-      this.cell,
-      { textAlign: map[align] ? map[align] : DEFAULT_COLUMN_ALIGN },
-    );
+    return {
+      ...corePropStyle,
+      textAlign: map[align] ? map[align] : DEFAULT_COLUMN_ALIGN,
+    };
   },
 };
 
@@ -94,14 +93,38 @@ export class SussolReactTable extends PureComponent {
     this.renderEditableCell = this.renderEditableCell.bind(this);
     this.toggleSortOrder = this.toggleSortOrder.bind(this);
     this.renderColumns = this.renderColumns.bind(this);
+    this.getCellText = this.getCellText.bind(this);
+    this.tableRef = this.tableRef.bind(this);
   }
 
   componentDidMount() {
     if (this.state.tableData.length === 0) this.generateLoadingRows();
   }
 
-  componentWillReceiveProps({ tableData }) {
-    this.setState({ tableData, dataLoading: !(tableData.length > 0) });
+  componentWillReceiveProps({ cellAutoHeight, tableData }) {
+    this.setState(
+      { tableData, dataLoading: !(tableData.length > 0) },
+      // use `Table` instance method to get dynamic height based on character count
+      () => {
+        if (cellAutoHeight) this.table.resizeRowsByApproximateHeight(this.getCellText);
+      },
+    );
+  }
+
+  /**
+   * getCellText
+   *
+   * Fulfils contract for `resizeRowsByApproximateHeight`. Basically, just
+   * needs to access the cell's text content.
+   *
+   * @param  {int} row       cell row index
+   * @param  {int} column    cell column index
+   * @return {str}           cell text content
+   */
+  getCellText(row, column) {
+    const rowKeys = Object.keys(this.state.tableData[row]);
+    const columnSelected = rowKeys[column];
+    return this.state.tableData[row][columnSelected];
   }
 
   generateLoadingRows(rowCount = this.props.loadingRowCount) {
@@ -118,6 +141,9 @@ export class SussolReactTable extends PureComponent {
 
     this.setState({ tableData: rows, dataLoading: true });
   }
+
+
+  tableRef(table = Table) { this.table = table; }
 
   toggleSortOrder(column) {
     if (!column.sortable) return;
@@ -158,16 +184,19 @@ export class SussolReactTable extends PureComponent {
     );
   }
 
-  renderCell(rowIndex, columnIndex, { align, key }, { cellDataKey }) {
+  renderCell(rowIndex, columnIndex, { align, key }, { cellDataKey, coreCellProps }) {
     const { dataLoading, tableData } = this.state;
     const value = tableData[rowIndex][key] !== null ? tableData[rowIndex][key] : '';
     const keyClassName = cellDataKey ? `${cellDataKey}-${tableData[rowIndex][cellDataKey]}` : '';
     const cellAlign = align || this.props.defaultColumnAlign;
     return (
       <Cell
+        {...coreCellProps}
         loading={dataLoading}
-        className={keyClassName}
-        style={styles.getCellStyles(cellAlign)}
+        // @note bp doesn't pass through data props,
+        // so we can't use custom attributes here for `cellDataKey`
+        className={(coreCellProps.className ? `${coreCellProps.className} ${keyClassName}` : keyClassName)}
+        style={styles.getCellStyles(cellAlign, (coreCellProps && coreCellProps.style))}
       >
         {value}
       </Cell>
@@ -213,7 +242,7 @@ export class SussolReactTable extends PureComponent {
 
   render() {
     return (
-      <Table {...this.props} numRows={(this.state.tableData.length)}>
+      <Table ref={this.tableRef} {...this.props} numRows={(this.state.tableData.length)}>
         {this.renderColumns(this.props)}
       </Table>
     );
@@ -222,7 +251,9 @@ export class SussolReactTable extends PureComponent {
 
 SussolReactTable.propTypes = {
   ...Table.propTypes,
+  cellAutoHeight: PropTypes.bool,
   columns: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
+  coreCellProps: PropTypes.objectOf(PropTypes.any),
   tableData: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
   defaultSortKey: PropTypes.string,
   loadingRowCount: PropTypes.number,
@@ -231,7 +262,9 @@ SussolReactTable.propTypes = {
 };
 
 SussolReactTable.defaultProps = {
+  cellAutoHeight: false,
   columns: [],
+  coreCellProps: {},
   defaultColumnAlign: DEFAULT_COLUMN_ALIGN,
   defaultSortKey: '',
   defaultSortOrder: DEFAULT_SORT,
