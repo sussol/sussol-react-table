@@ -86,4 +86,4 @@ You will need include the following styles via your `index.html` (or by bundling
 
 ## Additional docs
 
-Read up on the API for the [blueprintjs table component](http://blueprintjs.com/docs/#components.table-js.api).
+Read up on the API for the [blueprintjs table component](http://blueprintjs.com/docs/v1/#table-js).
