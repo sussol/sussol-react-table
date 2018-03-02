@@ -88,27 +88,32 @@ export class SussolReactTable extends PureComponent {
     };
 
     // bindings
-    this.renderCell = this.renderCell.bind(this);
-    this.renderColumnHeader = this.renderColumnHeader.bind(this);
-    this.renderEditableCell = this.renderEditableCell.bind(this);
-    this.toggleSortOrder = this.toggleSortOrder.bind(this);
-    this.renderColumns = this.renderColumns.bind(this);
+    this.adjustCellHeight = this.adjustCellHeight.bind(this);
     this.getCellText = this.getCellText.bind(this);
+    this.renderCell = this.renderCell.bind(this);
+    this.renderEditableCell = this.renderEditableCell.bind(this);
+    this.renderColumnHeader = this.renderColumnHeader.bind(this);
+    this.renderColumns = this.renderColumns.bind(this);
     this.tableRef = this.tableRef.bind(this);
+    this.toggleSortOrder = this.toggleSortOrder.bind(this);
   }
 
   componentDidMount() {
     if (this.state.tableData.length === 0) this.generateLoadingRows();
+
+    this.adjustCellHeight();
   }
 
-  componentWillReceiveProps({ cellAutoHeight, tableData }) {
+  componentWillReceiveProps({ tableData }) {
     this.setState(
       { tableData, dataLoading: !(tableData.length > 0) },
       // use `Table` instance method to get dynamic height based on character count
-      () => {
-        if (cellAutoHeight) this.table.resizeRowsByApproximateHeight(this.getCellText);
-      },
+      () => { this.adjustCellHeight(); },
     );
+  }
+
+  componentDidUpdate() {
+    this.adjustCellHeight();
   }
 
   /**
@@ -127,6 +132,20 @@ export class SussolReactTable extends PureComponent {
     return this.state.tableData[row][columnSelected];
   }
 
+  /**
+   * adjustCellHeight - calls <Table /> instance method
+   * @see http://blueprintjs.com/docs/v1/#table-js.instance-methods
+   */
+  adjustCellHeight() {
+    const { cellAutoHeight } = this.props;
+    if (!cellAutoHeight) return;
+    this.table.resizeRowsByApproximateHeight(
+      this.getCellText,
+      // options from user; fulfils contract
+      typeof cellAutoHeight === 'boolean' ? {} : cellAutoHeight,
+    );
+  }
+
   generateLoadingRows(rowCount = this.props.loadingRowCount) {
     if (rowCount === 0) return;
     const rows = [];
@@ -141,7 +160,6 @@ export class SussolReactTable extends PureComponent {
 
     this.setState({ tableData: rows, dataLoading: true });
   }
-
 
   tableRef(table = Table) { this.table = table; }
 
@@ -207,9 +225,12 @@ export class SussolReactTable extends PureComponent {
     const { tableData } = this.state;
     const value = tableData[rowIndex][columnKey] !== null ? tableData[rowIndex][columnKey] : '';
     const keyClassName = cellDataKey ? `${cellDataKey}-${tableData[rowIndex][cellDataKey]}` : '';
+    // @todo remove legacy `editableCellProps` in major rev.
+    const { coreEditableCellProps, editableCellProps } = this.props;
     return (
       <EditableCell
-        {...this.props.editableCellProps}
+        {...editableCellProps}
+        {...coreEditableCellProps}
         // sorry to possibly thwart your propTypes,
         // but we need more than just the columnIndex, Blueprint!
         columnIndex={{ column: columnIndex, columnKey }}
@@ -250,25 +271,31 @@ export class SussolReactTable extends PureComponent {
 }
 
 SussolReactTable.propTypes = {
-  ...Table.propTypes,
-  cellAutoHeight: PropTypes.bool,
+  cellAutoHeight: PropTypes.oneOfType([
+    PropTypes.objectOf(PropTypes.any),
+    PropTypes.bool,
+  ]),
   columns: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
   coreCellProps: PropTypes.objectOf(PropTypes.any),
-  tableData: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
+  coreEditableCellProps: PropTypes.objectOf(PropTypes.any),
+  defaultColumnAlign: PropTypes.string,
   defaultSortKey: PropTypes.string,
+  defaultSortOrder: PropTypes.string,
+  editableCellProps: PropTypes.objectOf(PropTypes.any),
   loadingRowCount: PropTypes.number,
   onEditableCellChange: PropTypes.func,
-  rowHeight: PropTypes.number,
+  tableData: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
 };
 
 SussolReactTable.defaultProps = {
   cellAutoHeight: false,
   columns: [],
   coreCellProps: {},
+  coreEditableCellProps: {},
+  editableCellProps: {},
   defaultColumnAlign: DEFAULT_COLUMN_ALIGN,
   defaultSortKey: '',
   defaultSortOrder: DEFAULT_SORT,
   loadingRowCount: 0,
   onEditableCellChange: () => {},
-  rowHeight: 45,
 };
