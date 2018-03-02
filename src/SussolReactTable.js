@@ -104,9 +104,13 @@ export class SussolReactTable extends PureComponent {
     this.adjustCellHeight();
   }
 
-  componentWillReceiveProps({ tableData }) {
+  componentWillReceiveProps({ defaultSortKey, defaultSortOrder, tableData }) {
+    const data = defaultSortKey
+      ? sortColumn(defaultSortKey, compare, tableData, defaultSortOrder === DEFAULT_SORT)
+      : tableData;
+
     this.setState(
-      { tableData, dataLoading: !(tableData.length > 0) },
+      { tableData: data, dataLoading: !(tableData.length > 0) },
       // use `Table` instance method to get dynamic height based on character count
       () => { this.adjustCellHeight(); },
     );
