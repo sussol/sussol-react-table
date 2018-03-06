@@ -5,7 +5,7 @@
   },
   "name": "sussol-react-table",
   "main": "lib/index.js",
-  "version": "0.1.20",
+  "version": "0.1.21",
   "license": "MIT",
   "description": "A Sussol themed wrapper and simple API for the blueprintjs table component",
   "repository": {
