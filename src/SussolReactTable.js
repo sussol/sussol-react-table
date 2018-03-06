@@ -10,7 +10,7 @@ const styles = {
   cell: {
     textAlign: DEFAULT_COLUMN_ALIGN,
   },
-  getCellStyles: function cellStyles(align, corePropStyle) { // eslint-disable-line object-shorthand
+  getCellStyles: function cellStyles(align, corePropStyle = {}) {
     const map = {
       left: 'left',
       center: 'center',
@@ -105,7 +105,8 @@ export class SussolReactTable extends PureComponent {
   }
 
   componentWillReceiveProps({ defaultSortKey, defaultSortOrder, tableData }) {
-    const data = defaultSortKey
+    // sort data in place or don't
+    const data = (defaultSortKey && this.shouldSortOnReceive(tableData))
       ? sortColumn(defaultSortKey, compare, tableData, defaultSortOrder === DEFAULT_SORT)
       : tableData;
 
@@ -165,6 +166,14 @@ export class SussolReactTable extends PureComponent {
     this.setState({ tableData: rows, dataLoading: true });
   }
 
+  shouldSortOnReceive(tableData) {
+    const tableDataLength = tableData.length;
+    if (tableDataLength > 1 && tableDataLength === this.state.tableData.length) {
+      return false;
+    }
+    return true;
+  }
+
   tableRef(table = Table) { this.table = table; }
 
   toggleSortOrder(column) {
@@ -184,7 +193,7 @@ export class SussolReactTable extends PureComponent {
   // Renders column headers. Gets the sort direction from state and the label columns array.
   renderColumnHeader(column) {
     let sortIcon;
-    const { key, sortable } = column;
+    const { align, key, sortable } = column;
     const { isAscending, sortBy } = this.state;
 
     if (sortable && sortBy === key) {
@@ -200,7 +209,7 @@ export class SussolReactTable extends PureComponent {
           labelPosition="before"
           icon={sortIcon}
           onClick={() => this.toggleSortOrder(column)}
-          style={{ width: '100%' }}
+          style={{ ...styles.getCellStyles(align || this.props.defaultColumnAlign), width: '100%' }}
         />
       </ColumnHeaderCell>
     );

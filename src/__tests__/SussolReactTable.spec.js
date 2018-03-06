@@ -137,6 +137,101 @@ test('table sorts descending with defaultSortOrder="desc"', () => {
   expect(table.find('Cell').nodes[2].props.children).toBe('hello');
 });
 
+test('table sorts on first receive of data, not second update if data length is the same', () => {
+  const tableData = [{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }];
+  const table = MountWithMuiContext(
+    <SussolReactTable
+      cellDataKey="blahblah"
+      columns={[{
+        key: 'name',
+        title: 'Name',
+      }, {
+        key: 'code',
+        title: 'Code',
+      }]}
+      defaultSortKey="name"
+      defaultSortOrder="desc"
+      tableData={[]}
+    />,
+  );
+
+  expect(table.node.shouldSortOnReceive(tableData)).toBe(true);
+
+  // update data
+  table.setProps({ tableData });
+
+  expect(table.node.shouldSortOnReceive(tableData)).toBe(false);
+});
+
+test('table maintains sort between receive of props', () => {
+  const tableData = [{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }];
+  const table = MountWithMuiContext(
+    <SussolReactTable
+      cellDataKey="blahblah"
+      columns={[{
+        key: 'name',
+        title: 'Name',
+        sortable: true,
+      }, {
+        key: 'code',
+        title: 'Code',
+        sortable: true,
+      }]}
+      defaultSortKey="name"
+      defaultSortOrder="desc"
+      tableData={[]}
+      selectedRegions={[{ rows: 1 }]}
+    />,
+  );
+
+  // update data
+  table.setProps({ tableData });
+
+  expect(table.find('Cell').at(1).props().children).toBe(456);
+  expect(table.find('Cell').at(3).props().children).toBe(123);
+
+  table.find('ColumnHeaderCell').find('FlatButton').at(0).simulate('click');
+
+  expect(table.find('Cell').at(1).props().children).toBe(123);
+  expect(table.find('Cell').at(3).props().children).toBe(456);
+
+  table.setProps({ selectedRegions: [{ rows: 0 }] });
+
+  expect(table.find('Cell').at(1).props().children).toBe(123);
+  expect(table.find('Cell').at(3).props().children).toBe(456);
+});
+
+test('table sorts when column header is clicked', () => {
+  const tableData = [{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }];
+  const table = MountWithMuiContext(
+    <SussolReactTable
+      cellDataKey="blahblah"
+      columns={[{
+        key: 'name',
+        title: 'Name',
+        sortable: true,
+      }, {
+        key: 'code',
+        title: 'Code',
+      }]}
+      defaultSortKey="name"
+      defaultSortOrder="desc"
+      tableData={[]}
+    />,
+  );
+
+  // update data
+  table.setProps({ tableData });
+
+  expect(table.find('Cell').at(1).props().children).toBe(456);
+  expect(table.find('Cell').at(3).props().children).toBe(123);
+
+  table.find('ColumnHeaderCell').find('FlatButton').at(0).simulate('click');
+
+  expect(table.find('Cell').at(3).props().children).toBe(456);
+  expect(table.find('Cell').at(1).props().children).toBe(123);
+});
+
 test('table sorts ascending with defaultSortOrder="asc"', () => {
   const table = MountWithMuiContext(
     <SussolReactTable
@@ -201,6 +296,10 @@ test('table aligns defaults based defaultColumnAlign', () => {
   table.find('Cell').nodes.forEach((cell) => {
     expect(cell.props.style.textAlign === 'right').toBe(true);
   });
+
+  table.find('ColumnHeaderCell').find('FlatButton').nodes.forEach((cell) => {
+    expect(cell.props.style.textAlign === 'right').toBe(true);
+  });
 });
 
 test('table aligns defaults to DEFAULT_COLUMN_ALIGN when wrong enum; based defaultColumnAlign', () => {
@@ -226,6 +325,38 @@ test('table aligns defaults to DEFAULT_COLUMN_ALIGN when wrong enum; based defau
   expect(table.find('Cell').nodes[0].props.style.textAlign === 'left').toBe(true);
   expect(table.find('Cell').nodes[1].props.style.textAlign === 'left').toBe(true);
   expect(table.find('Cell').nodes[2].props.style.textAlign === 'left').toBe(true);
+});
+
+test('table aligns individual cells; based on column.align; column.align takes precedence', () => {
+  const table = MountWithMuiContext(
+    <SussolReactTable
+      cellDataKey="blahblah"
+      columns={[{
+        key: 'name',
+        title: 'Name',
+        align: 'left',
+      }, {
+        key: 'code',
+        title: 'Code',
+        align: 'right',
+      }, {
+        key: 'price',
+        title: 'Price',
+        align: 'center',
+      }]}
+      defaultColumnAlign="right"
+      defaultSortKey="code"
+      defaultSortOrder="asc"
+      tableData={[{ name: 'hello', code: 123, price: 1 }, { name: 'hey-hey', code: 456, price: 2 }, { name: 'hey-hey', code: 789, price: 3 }]}
+    />,
+  );
+  expect(table.find('Cell').nodes[0].props.style.textAlign === 'left').toBe(true);
+  expect(table.find('Cell').nodes[1].props.style.textAlign === 'right').toBe(true);
+  expect(table.find('Cell').nodes[2].props.style.textAlign === 'center').toBe(true);
+
+  expect(table.find('ColumnHeaderCell').find('FlatButton').nodes[0].props.style.textAlign === 'left').toBe(true);
+  expect(table.find('ColumnHeaderCell').find('FlatButton').nodes[1].props.style.textAlign === 'right').toBe(true);
+  expect(table.find('ColumnHeaderCell').find('FlatButton').nodes[2].props.style.textAlign === 'center').toBe(true);
 });
 
 test('table aligns individual cells to DEFAULT_COLUMN_ALIGN when wrong enum; based on column.align; column.align takes precedence', () => {
