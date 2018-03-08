@@ -92,7 +92,7 @@ export class SussolReactTable extends PureComponent {
     this.getCellText = this.getCellText.bind(this);
     this.renderCell = this.renderCell.bind(this);
     this.renderEditableCell = this.renderEditableCell.bind(this);
-    this.renderColumnHeader = this.renderColumnHeader.bind(this);
+    this.columnHeaderCellRenderer = this.columnHeaderCellRenderer.bind(this);
     this.renderColumns = this.renderColumns.bind(this);
     this.tableRef = this.tableRef.bind(this);
     this.toggleSortOrder = this.toggleSortOrder.bind(this);
@@ -191,7 +191,7 @@ export class SussolReactTable extends PureComponent {
   }
 
   // Renders column headers. Gets the sort direction from state and the label columns array.
-  renderColumnHeader(column) {
+  columnHeaderCellRenderer(column) {
     let sortIcon;
     const { align, key, sortable } = column;
     const { isAscending, sortBy } = this.state;
@@ -263,12 +263,12 @@ export class SussolReactTable extends PureComponent {
       return (
         <Column
           key={key}
-          renderCell={(rowIndex, columnIndex) => (
+          cellRenderer={(rowIndex, columnIndex) => (
             column.editable
               ? this.renderEditableCell(rowIndex, columnIndex, column.key, props)
               : this.renderCell(rowIndex, columnIndex, column, props)
           )}
-          renderColumnHeader={() => this.renderColumnHeader(column)}
+          columnHeaderCellRenderer={() => this.columnHeaderCellRenderer(column)}
         />
       );
     });

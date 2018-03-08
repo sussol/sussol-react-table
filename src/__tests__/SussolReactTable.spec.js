@@ -1,14 +1,21 @@
 /* eslint-disable function-paren-newline */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { mount, shallow } from 'enzyme';
+import Enzyme, { mount, shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { SussolReactTable } from '../';
 
+Enzyme.configure({ adapter: new Adapter() });
+
 const muiTheme = getMuiTheme();
 
 const createStringOfLength = length => new Array(length).fill('a').join('');
+
+const classNameContains = (className, classes) => (
+  classes.split(' ').includes(className)
+);
 
 /**
 * MountWithMuiContext
@@ -33,7 +40,7 @@ test('renders table', () => {
     />,
   );
 
-  expect(table.find('Table').length).toBe(1);
+  expect(table.length).toBe(1);
 });
 
 test('renders table with props', () => {
@@ -50,8 +57,8 @@ test('renders table with props', () => {
     />,
   );
 
-  expect(table.props().tableData.length).toBe(1);
-  expect(table.props().columns.length).toBe(2);
+  expect(table.get(0).props.tableData.length).toBe(1);
+  expect(table.get(0).props.columns.length).toBe(2);
 });
 
 test('renders cells with cellDataKey', () => {
@@ -72,8 +79,10 @@ test('renders cells with cellDataKey', () => {
   expect(table.props().tableData.length).toBe(2);
   expect(table.props().columns.length).toBe(2);
   // find 4 total cells with the "code" className's attached
-  expect(table.find('.code-123').length).toBe(2);
-  expect(table.find('.code-456').length).toBe(2);
+  expect(classNameContains('code-123', table.find('Cell').getElements()[0].props.className)).toBe(true);
+  expect(classNameContains('code-123', table.find('Cell').getElements()[1].props.className)).toBe(true);
+  expect(classNameContains('code-456', table.find('Cell').getElements()[2].props.className)).toBe(true);
+  expect(classNameContains('code-456', table.find('Cell').getElements()[3].props.className)).toBe(true);
 });
 
 test('does not render cells with incorrect cellDataKey', () => {
@@ -93,9 +102,8 @@ test('does not render cells with incorrect cellDataKey', () => {
 
   expect(table.props().tableData.length).toBe(2);
   expect(table.props().columns.length).toBe(2);
-  // find 4 total cells with the "code" className's attached
-  expect(table.find('.code-123').length).toBe(0);
-  expect(table.find('.code-456').length).toBe(0);
+
+  expect(classNameContains('blahblah', table.find('Cell').getElements()[0].props.className)).toBe(false);
 });
 
 test('table sorts default ascending', () => {
@@ -113,8 +121,8 @@ test('table sorts default ascending', () => {
       tableData={[{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }]}
     />,
   );
-  expect(table.find('Cell').nodes[0].props.children).toBe('hello');
-  expect(table.find('Cell').nodes[2].props.children).toBe('hey-hey');
+  expect(table.find('Cell').getElements()[0].props.children).toBe('hello');
+  expect(table.find('Cell').getElements()[2].props.children).toBe('hey-hey');
 });
 
 test('table sorts descending with defaultSortOrder="desc"', () => {
@@ -133,34 +141,8 @@ test('table sorts descending with defaultSortOrder="desc"', () => {
       tableData={[{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }]}
     />,
   );
-  expect(table.find('Cell').nodes[0].props.children).toBe('hey-hey');
-  expect(table.find('Cell').nodes[2].props.children).toBe('hello');
-});
-
-test('table sorts on first receive of data, not second update if data length is the same', () => {
-  const tableData = [{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }];
-  const table = MountWithMuiContext(
-    <SussolReactTable
-      cellDataKey="blahblah"
-      columns={[{
-        key: 'name',
-        title: 'Name',
-      }, {
-        key: 'code',
-        title: 'Code',
-      }]}
-      defaultSortKey="name"
-      defaultSortOrder="desc"
-      tableData={[]}
-    />,
-  );
-
-  expect(table.node.shouldSortOnReceive(tableData)).toBe(true);
-
-  // update data
-  table.setProps({ tableData });
-
-  expect(table.node.shouldSortOnReceive(tableData)).toBe(false);
+  expect(table.find('Cell').getElements()[0].props.children).toBe('hey-hey');
+  expect(table.find('Cell').getElements()[2].props.children).toBe('hello');
 });
 
 test('table maintains sort between receive of props', () => {
@@ -248,8 +230,8 @@ test('table sorts ascending with defaultSortOrder="asc"', () => {
       tableData={[{ name: 'hello', code: 123 }, { name: 'hey-hey', code: 456 }]}
     />,
   );
-  expect(table.find('Cell').nodes[1].props.children).toBe(123);
-  expect(table.find('Cell').nodes[3].props.children).toBe(456);
+  expect(table.find('Cell').getElements()[1].props.children).toBe(123);
+  expect(table.find('Cell').getElements()[3].props.children).toBe(456);
 });
 
 test('table aligns all cells based defaultColumnAlign', () => {
@@ -270,7 +252,7 @@ test('table aligns all cells based defaultColumnAlign', () => {
     />,
   );
 
-  table.find('Cell').nodes.forEach((cell) => {
+  table.find('Cell').getElements().forEach((cell) => {
     expect(cell.props.style.textAlign === 'right').toBe(true);
   });
 });
@@ -293,11 +275,11 @@ test('table aligns defaults based defaultColumnAlign', () => {
     />,
   );
 
-  table.find('Cell').nodes.forEach((cell) => {
+  table.find('Cell').getElements().forEach((cell) => {
     expect(cell.props.style.textAlign === 'right').toBe(true);
   });
 
-  table.find('ColumnHeaderCell').find('FlatButton').nodes.forEach((cell) => {
+  table.find('ColumnHeaderCell').find('FlatButton').getElements().forEach((cell) => {
     expect(cell.props.style.textAlign === 'right').toBe(true);
   });
 });
@@ -322,9 +304,9 @@ test('table aligns defaults to DEFAULT_COLUMN_ALIGN when wrong enum; based defau
       tableData={[{ name: 'hello', code: 123, price: 1 }, { name: 'hey-hey', code: 456, price: 2 }, { name: 'hey-hey', code: 789, price: 3 }]}
     />,
   );
-  expect(table.find('Cell').nodes[0].props.style.textAlign === 'left').toBe(true);
-  expect(table.find('Cell').nodes[1].props.style.textAlign === 'left').toBe(true);
-  expect(table.find('Cell').nodes[2].props.style.textAlign === 'left').toBe(true);
+  expect(table.find('Cell').getElements()[0].props.style.textAlign === 'left').toBe(true);
+  expect(table.find('Cell').getElements()[1].props.style.textAlign === 'left').toBe(true);
+  expect(table.find('Cell').getElements()[2].props.style.textAlign === 'left').toBe(true);
 });
 
 test('table aligns individual cells; based on column.align; column.align takes precedence', () => {
@@ -350,13 +332,13 @@ test('table aligns individual cells; based on column.align; column.align takes p
       tableData={[{ name: 'hello', code: 123, price: 1 }, { name: 'hey-hey', code: 456, price: 2 }, { name: 'hey-hey', code: 789, price: 3 }]}
     />,
   );
-  expect(table.find('Cell').nodes[0].props.style.textAlign === 'left').toBe(true);
-  expect(table.find('Cell').nodes[1].props.style.textAlign === 'right').toBe(true);
-  expect(table.find('Cell').nodes[2].props.style.textAlign === 'center').toBe(true);
+  expect(table.find('Cell').getElements()[0].props.style.textAlign === 'left').toBe(true);
+  expect(table.find('Cell').getElements()[1].props.style.textAlign === 'right').toBe(true);
+  expect(table.find('Cell').getElements()[2].props.style.textAlign === 'center').toBe(true);
 
-  expect(table.find('ColumnHeaderCell').find('FlatButton').nodes[0].props.style.textAlign === 'left').toBe(true);
-  expect(table.find('ColumnHeaderCell').find('FlatButton').nodes[1].props.style.textAlign === 'right').toBe(true);
-  expect(table.find('ColumnHeaderCell').find('FlatButton').nodes[2].props.style.textAlign === 'center').toBe(true);
+  expect(table.find('ColumnHeaderCell').find('FlatButton').getElements()[0].props.style.textAlign === 'left').toBe(true);
+  expect(table.find('ColumnHeaderCell').find('FlatButton').getElements()[1].props.style.textAlign === 'right').toBe(true);
+  expect(table.find('ColumnHeaderCell').find('FlatButton').getElements()[2].props.style.textAlign === 'center').toBe(true);
 });
 
 test('table aligns individual cells to DEFAULT_COLUMN_ALIGN when wrong enum; based on column.align; column.align takes precedence', () => {
@@ -382,9 +364,9 @@ test('table aligns individual cells to DEFAULT_COLUMN_ALIGN when wrong enum; bas
       tableData={[{ name: 'hello', code: 123, price: 1 }, { name: 'hey-hey', code: 456, price: 2 }, { name: 'hey-hey', code: 789, price: 3 }]}
     />,
   );
-  expect(table.find('Cell').nodes[0].props.style.textAlign === 'left').toBe(true);
-  expect(table.find('Cell').nodes[1].props.style.textAlign === 'left').toBe(true);
-  expect(table.find('Cell').nodes[2].props.style.textAlign === 'left').toBe(true);
+  expect(table.find('Cell').getElements()[0].props.style.textAlign === 'left').toBe(true);
+  expect(table.find('Cell').getElements()[1].props.style.textAlign === 'left').toBe(true);
+  expect(table.find('Cell').getElements()[2].props.style.textAlign === 'left').toBe(true);
 });
 
 test('cellAutoHeight causes cells to change height', () => {
@@ -416,7 +398,7 @@ test('cellAutoHeight causes cells to change height', () => {
 
   table.update();
 
-  expect(table.find('Cell').nodes[0].props.style.height).toBe('162px');
+  expect(table.find('Cell').getElements()[0].props.style.height).toBe('162px');
 });
 
 test('cellAutoHeight=false causes cells to remain same default height', () => {
@@ -448,5 +430,5 @@ test('cellAutoHeight=false causes cells to remain same default height', () => {
 
   table.update();
 
-  expect(table.find('Cell').nodes[0].props.style.height).toBe('20px');
+  expect(table.find('Cell').getElements()[0].props.style.height).toBe('20px');
 });
