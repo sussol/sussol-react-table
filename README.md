@@ -14,7 +14,7 @@ or
 
 | Prop          | Type          | Description  |
 | ------------- |:-------------:| ------------ |
-| `cellAutoHeight` | `Object | Boolean` | Defaults to `false`. If `true`, or an object of [options](http://blueprintjs.com/docs/v1/#table-js.instance-methods) is provided, the table will adjust the `<Cell />` height to fit the length of the content. Use with `wrapText: true` inside `coreCellProps` for best results with no truncation. |
+| `cellAutoHeight` | `Object\|Boolean` | Defaults to `false`. If `true`, or an object of [options](http://blueprintjs.com/docs/v1/#table-js.instance-methods) is provided, the table will adjust the `<Cell />` height to fit the length of the content. Use with `wrapText: true` inside `coreCellProps` for best results with no truncation. |
 | `cellDataKey` | `String`      | Pass a key (object property) from your table data set as a string. The data's key will be used to access a value &ndash; the unique key. Good for selecting the table row and loading a corresponding component, based on the selected key. e.g. `{ ... code: 123456789, ...}` |
 | `columns`     | `Array`| `[{ key: String, title: String, ?sortable: Boolean, ?align: "left\|center\|right" }]` Column headers for the table. |
 | `coreCellProps` | `Object` | Pass any core Blueprint `<Table />` props through. |
