@@ -99,21 +99,25 @@ export class SussolReactTable extends PureComponent {
   }
 
   componentDidMount() {
-    if (this.state.tableData.length === 0) this.generateLoadingRows();
-
-    this.adjustCellHeight();
+    if (this.state.tableData.length === 0) {
+      this.generateLoadingRows();
+    } else {
+      this.adjustCellHeight();
+    }
   }
 
   componentWillReceiveProps({ defaultSortKey, defaultSortOrder, tableData }) {
     // sort data in place or don't
-    const data = (defaultSortKey && this.shouldSortOnReceive(tableData))
+    const data = defaultSortKey && this.shouldSortOnReceive(tableData)
       ? sortColumn(defaultSortKey, compare, tableData, defaultSortOrder === DEFAULT_SORT)
       : tableData;
 
     this.setState(
       { tableData: data, dataLoading: !(tableData.length > 0) },
       // use `Table` instance method to get dynamic height based on character count
-      () => { this.adjustCellHeight(); },
+      () => {
+        if (this.state.dataLoading === false) this.adjustCellHeight();
+      },
     );
   }
 
@@ -144,6 +148,7 @@ export class SussolReactTable extends PureComponent {
   adjustCellHeight() {
     const { cellAutoHeight } = this.props;
     if (!cellAutoHeight) return;
+
     this.table.resizeRowsByApproximateHeight(
       this.getCellText,
       // options from user; fulfils contract
@@ -174,7 +179,9 @@ export class SussolReactTable extends PureComponent {
     return true;
   }
 
-  tableRef(table = Table) { this.table = table; }
+  tableRef(ref) {
+    this.table = ref;
+  }
 
   toggleSortOrder(column) {
     if (!column.sortable) return;
@@ -244,8 +251,6 @@ export class SussolReactTable extends PureComponent {
       <EditableCell
         {...editableCellProps}
         {...coreEditableCellProps}
-        // sorry to possibly thwart your propTypes,
-        // but we need more than just the columnIndex, Blueprint!
         columnIndex={{ column: columnIndex, columnKey }}
         rowIndex={rowIndex}
         value={value}

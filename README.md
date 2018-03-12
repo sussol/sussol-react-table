@@ -14,7 +14,7 @@ or
 
 | Prop          | Type          | Description  |
 | ------------- |:-------------:| ------------ |
-| `cellAutoHeight` | `Object \| Boolean` | Defaults to `false`. If `true`, or an object of [options](http://blueprintjs.com/docs/v1/#table-js.instance-methods) is provided, the table will adjust the `<Cell />` height to fit the length of the content. Use with `wrapText: true` inside `coreCellProps` for best results with no truncation. |
+| `cellAutoHeight` | `Object | Boolean` | Defaults to `false`. If `true`, or an object of [options](http://blueprintjs.com/docs/v1/#table-js.instance-methods) is provided, the table will adjust the `<Cell />` height to fit the length of the content. Use with `wrapText: true` inside `coreCellProps` for best results with no truncation. |
 | `cellDataKey` | `String`      | Pass a key (object property) from your table data set as a string. The data's key will be used to access a value &ndash; the unique key. Good for selecting the table row and loading a corresponding component, based on the selected key. e.g. `{ ... code: 123456789, ...}` |
 | `columns`     | `Array`| `[{ key: String, title: String, ?sortable: Boolean, ?align: "left\|center\|right" }]` Column headers for the table. |
 | `coreCellProps` | `Object` | Pass any core Blueprint `<Table />` props through. |
@@ -23,11 +23,12 @@ or
 | `defaultSortKey` | `String` | The default column key for sorting the table data. If no key is set, nothing is done. **Be sure your data already exists when the component initialises** (i.e. `{this.state.data.length && ...`). |
 | `defaultSortOrder` | `String` | `"asc\|desc"` If `defaultSortKey` is set, determines the default column sort direction on initialisation. Defaults to `"asc"`. |
 | `coreEditableCellProps` | `Object` | An object of Blueprint `<EditableCell />` props to pass through. All handler functions will be passed `value: String, row: Number, { column:Number, columnKey:String }:Object`, which differs slightly from the default implementation options. |
-| `loadingRowCount` | `Number` | If set, table will show the core loading state for rows/cells equal to the value of `loadingRowCount`. Defaults to `0`. |
+| `loadingRowCount`* | `Number` | If set, table will show the core loading state for rows/cells equal to the value of `loadingRowCount`. Defaults to `0`. |
 
 NOTE:
 
 * All other blueprintjs Table props are passed to its root `<Table />` component.
+* `loadingRowCount`, if using `sussol-react-table@next`, will most likely need to be styled (e.g. add `background-color`) by extending the `.pt-table-container .pt-loading .pt-skeleton { ... }` selector.
 
 ## Usage
 ```js

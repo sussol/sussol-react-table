@@ -432,3 +432,82 @@ test('cellAutoHeight=false causes cells to remain same default height', () => {
 
   expect(table.find('Cell').getElements()[0].props.style.height).toBe('20px');
 });
+
+test('Cell loading happens when no initial data', () => {
+  const expectedData = [
+    { name: 'name', code: 'code', price: 'price' },
+    { name: 'name', code: 'code', price: 'price' },
+    { name: 'name', code: 'code', price: 'price' },
+  ];
+
+  const table = shallow(
+    <SussolReactTable
+      cellAutoHeight
+      coreCellProps={{ wrapText: true }}
+      columns={[{
+        key: 'name',
+        title: 'Name',
+        align: 'crap',
+      }, {
+        key: 'code',
+        title: 'Code',
+        align: 'ew',
+      }, {
+        key: 'price',
+        title: 'Price',
+        align: 'nasty',
+      }]}
+      columnWidths={[130, 227, 130]}
+      tableData={[]}
+      loadingRowCount={3}
+    />,
+  );
+
+  expect(table.state().dataLoading).toBe(true);
+  expect(table.state().tableData).toEqual(expectedData);
+});
+
+test('Cell loading disappears after data loaded', () => {
+  const expectedData = [
+    { name: 'name', code: 'code', price: 'price' },
+    { name: 'name', code: 'code', price: 'price' },
+    { name: 'name', code: 'code', price: 'price' },
+  ];
+  const networkData = [
+    { name: 'hey', code: 'ERT', price: '123' },
+    { name: 'hello', code: 'CVB', price: '456' },
+    { name: 'hi', code: 'DAS', price: '789' },
+  ];
+
+  // need to mount to retain ref access
+  const table = MountWithMuiContext(
+    <SussolReactTable
+      cellAutoHeight
+      coreCellProps={{ wrapText: true }}
+      columns={[{
+        key: 'name',
+        title: 'Name',
+        align: 'crap',
+      }, {
+        key: 'code',
+        title: 'Code',
+        align: 'ew',
+      }, {
+        key: 'price',
+        title: 'Price',
+        align: 'nasty',
+      }]}
+      columnWidths={[130, 227, 130]}
+      tableData={[]}
+      loadingRowCount={3}
+    />,
+  );
+
+  expect(table.state().dataLoading).toBe(true);
+  expect(table.state().tableData).toEqual(expectedData);
+
+  table.setProps({ tableData: networkData });
+
+  expect(table.state().dataLoading).toBe(false);
+  expect(table.state().tableData).toEqual(networkData);
+});
